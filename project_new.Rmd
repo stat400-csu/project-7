@@ -77,7 +77,7 @@ p2 <- p2 +labs(title="Plot of Player Points Per Minute by Position",
 p2
 ```
 
-## Suns vs. Bucks
+## Cavaliers vs. Warriors
 
 -More specifically we are interested in how well we can predict the score of Phoenix Suns players when they play the Milwaukee Bucks. In order to do we this we further subset the data from 28 variables and 155,489 observations to 28 variables and 124 observations.
 
@@ -85,7 +85,7 @@ p2
 
 -We looked at another box plot of points per minute vs positions for both home and away games. The graph looks similar to the points per minute by position for all games since 2012.
 
-## Suns vs. Bucks
+## Cavaliers vs. Warriors
 
 ```{r}
 suns <- box[box$teamAbbr == "PHO",]
@@ -95,7 +95,7 @@ p4 <- ggplot(suns_bucks, aes(x=playPos, y=(playPTS/playMin), fill = teamLoc)) +
 p4
 ```
 
-## Suns vs. Bucks
+## Cavaliers vs. Warriors
 
 -The final thing that we wanted to look at was the minutes vs points for both home and away games. We wanted to look at this to see if we should slightly adjust our model for when games are either home or away. 
 
@@ -110,7 +110,7 @@ p3
 ```
 
 
-## Suns vs. Bucks
+## Cavaliers vs. Warriors
 
 -As we can see by the plot there is not much difference minutes vs points for home vs away games when the Suns play the Bucks since 2012.
 
