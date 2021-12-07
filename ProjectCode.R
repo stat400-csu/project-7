@@ -102,17 +102,15 @@ simulation <- function(df, home_team, away_team, ns){
   
   away_player_dict = get_player_position_dict(away_team)
   
-  away_points_df = df.loc[(df['Tm'] ==away_team) & (df['Location'] == 'Away')].groupby('Player').mean()
-  away_points_df.reset_index(inplace = True)
-  away_points_df = away_points_df[['Player','MP', 'scoring_rate']]
-  away_points_df.rename(columns = {'MP': 'MP_mean', 'scoring_rate': 'scoring_rate_mean'}, inplace = True)
+  away_points_df <- df %>% filter(Tm == away_team, Location == 'Away') %>% group_by(Player) 
+  %>% summarise('MP_mean' = mean(MP, na.rm = TRUE), 'scoring_rate_mean' = mean(scoring_rate, na.rm = TRUE))
+  away_points_df <- away_points_df['Player','MP_mean', 'scoring_rate_mean']
   
-  away_points_std_df = df.loc[(df['Tm'] ==away_team) & (df['Location'] == 'Away')].groupby('Player').std()
-  away_points_std_df.reset_index(inplace = True)
-  away_points_std_df = away_points_std_df[['Player','MP', 'scoring_rate']]
-  away_points_std_df.rename(columns = {'MP': 'MP_std', 'scoring_rate': 'scoring_rate_std'}, inplace = True)
+  away_points_std_df <- df %>% filter(Tm == away_team, Location == 'Away') %>% group_by(Player) 
+  %>% summarise('MP_std' = sd(MP, na.rm = TRUE), 'scoring_rate_std' = sd(scoring_rate, na.rm = TRUE))
+  away_points_std_df <_ away_points_std_df['Player','MP_std', 'scoring_rate_std']
   
-  away2_points_df = pd.merge(away_points_df, away_points_std_df, on='Player')
+  away2_points_df <- merge(away_points_df, away_points_std_df, by ='Player')
   away2_points_df['Pos'] = away2_points_df['Player'].map(away_player_dict)
   away2_points_df.dropna(inplace = True)
   
@@ -125,7 +123,7 @@ simulation <- function(df, home_team, away_team, ns){
   home_conceding_df_std = df.loc[(df['Opp'] == home_team) & (df['Location'] == 'Away')].groupby('Pos').std().reset_index()
   home_conceding_df_std = home_conceding_df_std[['Pos', 'PTS']]
   home_conceding_df_std.columns = ['Pos', 'home_PTS_conceded_std']
-  away_df = pd.merge(combined2_df, home_conceding_df_std, on = 'Pos')
+  away_df <- merge(combined2_df, home_conceding_df_std, by = 'Pos')
   
   away_df['scores'] = away_df %>% lapply(score_sim(MP_mean, scoring_rate_mean, MP_std, scoring_rate_std, home_PTS_conceded_mean, home_PTS_conceded_std, ns),axis=1)
   
