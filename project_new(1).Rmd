@@ -109,4 +109,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 -The construction of this model is very simple and does not predict game outcomes with great accuracy or certainty. Be wary if you this model for your own sports betting purposes.
 
+## Monte Carlo Simulation
+
+
 ## Conclusion
