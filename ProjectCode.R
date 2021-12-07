@@ -16,7 +16,7 @@ get_player_position_dict <- function(team){
 
 score_sim <- function(mp_mean, scoring_rate_mean, mp_std, scoring_rate_std, away_PTS_conceded_mean, away_PTS_conceded_std, ns){ 
     
-  score_list = []
+  score_list = vector()
   
   for (i in 1:length(ns)){
     # How long an individual home team player plays at home
@@ -32,7 +32,7 @@ score_sim <- function(mp_mean, scoring_rate_mean, mp_std, scoring_rate_std, away
   
   
     # Force negatives to be 0
-    parameters = [home_minutes_played, home_player_scoring_effectiveness, away_positional_conceding]
+    parameters = c(home_minutes_played, home_player_scoring_effectiveness, away_positional_conceding)
     parameters = [0 if x<= 0 else x for x in parameters]
   
     # Convert to integer as we cannot score 0.5 points
@@ -46,6 +46,21 @@ score_sim <- function(mp_mean, scoring_rate_mean, mp_std, scoring_rate_std, away
   
   return(score_list)
 }
+
+                  
+convert_to_line <- function(score){
+    
+  score.sort()
+  freq = {x:score.count(x) for x in unordered_list}
+  values_list = list()
+  for val, count in freq.items():
+      for count in range(count):
+          values_list.append(val)
+
+  median_computed = statistics.median(values_list)
+  return(median_computed)                 
+}
+                  
 
 simulation <- function(df, home_team, away_team, ns){
     
@@ -71,16 +86,17 @@ simulation <- function(df, home_team, away_team, ns){
   away_concedeing_df = df.loc[(df['Opp'] == away_team) & (df['Location'] == 'Home')].groupby('Pos').mean().reset_index()
   away_concedeing_df = away_concedeing_df[['Pos', 'PTS']]
   away_concedeing_df.columns = ['Pos', 'away_PTS_conceded_mean']
-  combined1_df = pd.merge(home2_points_df, away_concedeing_df, on = 'Pos')
+  combined1_df <- merge(home2_points_df, away_concedeing_df, by = 'Pos')
   
+  away_concedeing_df_std <- df %>% filter(Opp == away_team, Location == 'Home') %>% group_by(Pos) 
+  %>% summarise('away_PTS_conceded_mean' = sd(scoring_rate, na.rm = TRUE))
   away_concedeing_df_std = df.loc[(df['Opp'] == away_team) & (df['Location'] == 'Home')].groupby('Pos').std().reset_index()
   away_concedeing_df_std = away_concedeing_df_std[['Pos', 'PTS']]
   away_concedeing_df_std.columns = ['Pos', 'away_PTS_conceded_std']
-  home_df = pd.merge(combined1_df, away_concedeing_df_std, on = 'Pos')
+  home_df <- merge(combined1_df, away_concedeing_df_std, by = 'Pos')
   
-  home_df['scores'] = home_df.apply(lambda x: score_sim(x['MP_mean'],x['scoring_rate_mean'], x['MP_std'], 
-                                                        x['scoring_rate_std'], x['away_PTS_conceded_mean'], x['away_PTS_conceded_std'], ns),axis=1)
-  home_df['score_line'] = home_df.apply(lambda x: convert_to_line(x['scores']),axis=1)
+  home_df['scores'] = home_df %>% lapply(score_sim(MP_mean, scoring_rate_mean, MP_std, scoring_rate_std, away_PTS_conceded_mean, away_PTS_conceded_std, ns),axis=1)
+  home_df['score_line'] = home_df %>% lapply(convert_to_line(scores),axis=1)
   
   #     Calculate lines for away_team
   
@@ -111,9 +127,9 @@ simulation <- function(df, home_team, away_team, ns){
   home_conceding_df_std.columns = ['Pos', 'home_PTS_conceded_std']
   away_df = pd.merge(combined2_df, home_conceding_df_std, on = 'Pos')
   
-  away_df['scores'] = away_df.apply(lambda x: score_sim(x['MP_mean'],x['scoring_rate_mean'], x['MP_std'], x['scoring_rate_std'], x['home_PTS_conceded_mean'], x['home_PTS_conceded_std'], ns),axis=1)
+  away_df['scores'] = away_df %>% lapply(score_sim(MP_mean, scoring_rate_mean, MP_std, scoring_rate_std, home_PTS_conceded_mean, home_PTS_conceded_std, ns),axis=1)
   
-  away_df['score_line'] = away_df.apply(lambda x: convert_to_line(x['scores']),axis=1)
+  away_df['score_line'] = away_df %>% lapply(convert_to_line(scores),axis=1)
   
   return home_df[['Player', 'score_line']], away_df[['Player', 'score_line']]
 }  
