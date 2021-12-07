@@ -39,7 +39,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Data
 
--For our data we found a data set on Kaggle.com. The data set is the box score for all NBA games since 2012. The data set has 51 variables and 155,489. 
+-For our data we found a data set on Kaggle.com. The data set is the box score for all NBA games since 2014. The data set has 51 variables and 155,489. 
 
 -After some clean up, we subset the data down to only 28 variables with still 155,489 observations. This includes getting rid of data such as the referee names, time of the game, player date of birth and so on.
 
@@ -81,9 +81,9 @@ p2
 
 -More specifically we are interested in how well we can predict the score of Phoenix Suns players when they play the Milwaukee Bucks. In order to do we this we further subset the data from 28 variables and 155,489 observations to 28 variables and 124 observations.
 
--This new data set contains the box score for all players on the Suns when they have played the Bucks since 2012.
+-This new data set contains the box score for all players on the Suns when they have played the Bucks since 2014.
 
--We looked at another box plot of points per minute vs positions for both home and away games. The graph looks similar to the points per minute by position for all games since 2012.
+-We looked at another box plot of points per minute vs positions for both home and away games. The graph looks similar to the points per minute by position for all games since 2014.
 
 ## Cavaliers vs. Warriors
 
@@ -129,8 +129,34 @@ This number is divided by 2, so offensive and defensive statistics are taken int
 
 ## Monte Carlo Simulation
 
+```{r}
+over_under_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) + ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+```
+
 ## Monte Carlo Simulation
 
+```{r}
+outcomes
+```
+
 ## Comparison
+
+```{r}
+gsw_cle_games <- c(204, 245, 231, 253, 249, 238, 225, 212, 193)
+mean(gsw_cle_games)
+sd(gsw_cle_games)
+```
 
 ## Conclusion
