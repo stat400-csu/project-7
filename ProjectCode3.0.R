@@ -1,7 +1,7 @@
 game_stats <- read.csv("nba.games.stats.csv")
 game_stats$Date <- substr(game_stats$Date,1,4)
 
-## Distribution Plots of PTS For and PTS Against by Team in 2018
+## Distribution Plots of PTS For and PTS Against by Team
 
 game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(TeamPoints,..density..),bins=40) + facet_wrap(~Team)
 game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(OpponentPoints,..density..),bins=40) + facet_wrap(~Team)
@@ -21,7 +21,7 @@ game_stats_17 <- game_stats %>% filter(Date == "2017")
 team_17 <- game_stats_17 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints),"AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
 
 game_stats_18 <- game_stats %>% filter(Date == "2018")
-team_18 <- game_stats_18 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints), "AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints), "Avg3Pts" = mean(X3PointShots), "SD3Pts" = sd(X3PointShots))
+team_18 <- game_stats_18 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints), "AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
 
 ## Weighting the data based on recency
 
