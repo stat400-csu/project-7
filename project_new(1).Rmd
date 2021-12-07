@@ -79,6 +79,16 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - Similarly to Bouley, we assume that the distribution of points for and points against on a team level is normal.
 
+```{r}
+game_stats <- read.csv("nba.games.stats.csv")
+game_stats$Date <- substr(game_stats$Date,1,4)
+
+## Distribution Plots of PTS For and PTS Against by Team in 2018
+
+game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(TeamPoints,..density..),bins=40) + facet_wrap(~Team)
+game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(OpponentPoints,..density..),bins=40) + facet_wrap(~Team)
+```
+
 ## Model Construction
 
 -Another assumption that our model makes is that a game outcome can be predicted simply.
@@ -93,6 +103,30 @@ knitr::opts_chunk$set(echo = FALSE)
 
 -GSW vs CLE example.
 
+```{r}
+## Spread line mc prediction function
+game_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) - ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+
+## 10000 MC samples of Golden State vs Cleveland Point Differential
+gsw_cle <- game_outcome(wgt_pts_stats,"GSW","CLE",10000)
+
+ggplot() + geom_histogram(aes(gsw_cle,..density..),bins=40) + xlab("Point Differential Outcomes of GSW vs CLE")
+
+mean(gsw_cle)
+```
+
 ## Over/Under Model
 
 -This model uses Monte Carlo Simulation to predict an O/U line between any two teams.
@@ -101,17 +135,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 -POR vs LAL example
 
-## Interpretation of the Model
-
--This model does not violate the normality assumptions, but is built very simply.
-
--This model is built only using data from 2014-2018. Therefore it is only effective for making a prediction for a game in 2018.
-
--The construction of this model is very simple and does not predict game outcomes with great accuracy or certainty. Be wary if you this model for your own sports betting purposes.
-
-## Monte Carlo Simulation
-
-```{r monte}
+```{r}
+## Over/Under line mc prediction function
 over_under_outcome <- function(dat,home_team, away_team,m){
   outcomes <- rep(NA,m)
   for (i in 1:m){
@@ -125,13 +150,23 @@ over_under_outcome <- function(dat,home_team, away_team,m){
   }
   outcomes
 }
+por_lal <- over_under_outcome(wgt_pts_stats,"POR","LAL",10000)
+
+## 10000 MC samples of Portland vs Boston Point Totals
+
+ggplot() + geom_histogram(aes(por_lal,..density..),bins=40) + xlab("Point Total Outcomes of POR vs LAL")
+
+mean(por_lal)
 ```
 
-## Monte Carlo Simulation
+## Interpretation of the Model
 
-```{r monte plot}
-over_under_outcome(read.csv("nba.games.stats.csv"), GSW, CLE, 10000)
-```
+-This model does not violate the normality assumptions, but is built very simply.
+
+-This model is built only using data from 2014-2018. Therefore it is only effective for making a prediction for a game in 2018.
+
+-The construction of this model is very simple and does not predict game outcomes with great accuracy or certainty. Be wary if you this model for your own sports betting purposes.
+
 ## Comparison
 
 ```{r comparison}
