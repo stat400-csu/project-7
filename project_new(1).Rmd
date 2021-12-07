@@ -130,7 +130,7 @@ over_under_outcome <- function(dat,home_team, away_team,m){
 ## Monte Carlo Simulation
 
 ```{r monte plot}
-outcomes
+over_under_outcome(read.csv("nba.games.stats.csv"), GSW, CLE, 10000)
 ```
 ## Comparison
 
