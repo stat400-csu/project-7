@@ -50,23 +50,24 @@ score_sim <- function(mp_mean, scoring_rate_mean, mp_std, scoring_rate_std, away
 simulation <- function(df, home_team, away_team, ns){
     
   #Calculate lines for home team
-  home_player_dict = get_player_position_dict(home_team)
+  home_player_dict <- get_player_position_dict(home_team)
   
-  home_points_df = df.loc[(df['Tm'] ==home_team) & (df['Location'] == 'Home')].groupby('Player').mean()
-  home_points_df.reset_index(inplace = True)
-  home_points_df = home_points_df[['Player','MP', 'scoring_rate']]
-  home_points_df.rename(columns = {'MP': 'MP_mean', 'scoring_rate': 'scoring_rate_mean'}, inplace = True)
+  home_points_df <- df %>% filter(Tm == home_team, Location == 'Home') %>% group_by(Player) 
+  %>% summarise('MP_mean' = mean(MP, na.rm = TRUE), 'scoring_rate_mean' = mean(scoring_rate, na.rm = TRUE))
+  home_points_df <- home_points_df['Player','MP_mean', 'scoring_rate_mean']
+   
+  home_pts_std_df <- df %>% filter(Tm == home_team, Location == 'Home') %>% group_by(Player) 
+  %>% summarise('MP_std' = sd(MP, na.rm = TRUE), 'scoring_rate_std' = sd(scoring_rate, na.rm = TRUE))
+  home_pts_std_df <- home_pts_std_df['Player','MP_std', 'scoring_rate_std']
   
-  home_pts_std_df = df.loc[(df['Tm'] == home_team) & (df['Location'] == 'Home')].groupby('Player').std()
-  home_pts_std_df.reset_index(inplace = True)
-  home_pts_std_df = home_pts_std_df[['Player','MP', 'scoring_rate']]
-  home_pts_std_df.rename(columns = {'MP': 'MP_std', 'scoring_rate': 'scoring_rate_std'}, inplace = True)
   
-  home2_points_df = pd.merge(home_points_df, home_pts_std_df, on='Player')
+  home2_points_df <- merge(home_points_df, home_pts_std_df, by = 'Player')
   home2_points_df['Pos'] = home2_points_df['Player'].map(home_player_dict)
   home2_points_df.dropna(inplace = True)
   
   
+  away_concedeing_df <- df %>% filter(Opp == away_team, Location == 'Home') %>% group_by(Pos) 
+  %>% summarise('away_PTS_conceded_mean' = mean(scoring_rate, na.rm = TRUE))
   away_concedeing_df = df.loc[(df['Opp'] == away_team) & (df['Location'] == 'Home')].groupby('Pos').mean().reset_index()
   away_concedeing_df = away_concedeing_df[['Pos', 'PTS']]
   away_concedeing_df.columns = ['Pos', 'away_PTS_conceded_mean']
