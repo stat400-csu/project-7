@@ -11,41 +11,41 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Predicting NBA Player Lines
 
-For our final project we thought it would be fun to predict NBA player lines using Monte Carlo Simulation.
+-For our final project we thought it would be fun to predict NBA player lines using Monte Carlo Simulation.
 
-Using this method, we can predict the stats that a certain player will produce during an NBA game and use that to compare against bookmakers when sports gambling.
+-Using this method, we can predict the stats that a certain player will produce during an NBA game and use that to compare against bookmakers when sports gambling.
 
 ## Background
 
-Sports betting relies on an efficient market hypothesis, which means that the prices on any event accurately reflect that events chance of happening.
+-Sports betting relies on an efficient market hypothesis, which means that the prices on any event accurately reflect that events chance of happening.
 
-In 1906 statistician Francis Galton observed a competition of 800 to guess an ox's weight, he found that while some guesses were high and others low, the average guess (1,197 lb)was extremely close to the weight of the ox (1,198 lb).
+-In 1906 statistician Francis Galton observed a competition of 800 to guess an ox's weight, he found that while some guesses were high and others low, the average guess (1,197 lb)was extremely close to the weight of the ox (1,198 lb).
 
-However, this assumption is only valid when there is a high sample size.
+-However, this assumption is only valid when there is a high sample size.
 
 ## Why use Monte Carlo?
 
-Monte Carlo simulations rely on repeated sampling to obtain numerical results and are helpful when looking at predicting events where randomness plays a large role, i.e. sports
+-Monte Carlo simulations rely on repeated sampling to obtain numerical results and are helpful when looking at predicting events where randomness plays a large role, i.e. sports
 
-Instead of just giving us a result, we can instead get a probability distribution of all the potential results, which is great for sports betting.
+-Instead of just giving us a result, we can instead get a probability distribution of all the potential results, which is great for sports betting.
 
-If we can accurately simulate games, we can use it to build our own lines and compare them to the bookmakers. We can then decide if we have something of value.
+-If we can accurately simulate games, we can use it to build our own lines and compare them to the bookmakers. We can then decide if we have something of value.
 
 ## Randomness
 
-Sports have so much randomness and variation as well as limited amounts of data to use. Lineups and coaching is always changing and teams do not preform very consistently from year to year, so historical data is mostly irrelevant.
+-Sports have so much randomness and variation as well as limited amounts of data to use. Lineups and coaching is always changing and teams do not preform very consistently from year to year, so historical data is mostly irrelevant.
 
-The amount of randomness is high from game to game, so looking at one prediction of a game is not very helpful. In order to be successful in sports betting, it doesn't matter what happens in one game, but what happens in 100 or 1000 games. Realizing the outcome over the long run is important.
+-The amount of randomness is high from game to game, so looking at one prediction of a game is not very helpful. In order to be successful in sports betting, it doesn't matter what happens in one game, but what happens in 100 or 1000 games. Realizing the outcome over the long run is important.
 
 ## Data
 
-For our data we found a data set on Kaggle.com. The data set is the box score for all NBA games since 2012. The data set has 51 variables and 155,489. 
+-For our data we found a data set on Kaggle.com. The data set is the box score for all NBA games since 2012. The data set has 51 variables and 155,489. 
 
-After some clean up, we subset the data down to only 28 variables with still 155,489 observations. This includes getting rid of data such as the referee names, time of the game, player date of birth and so on.
+-After some clean up, we subset the data down to only 28 variables with still 155,489 observations. This includes getting rid of data such as the referee names, time of the game, player date of birth and so on.
 
 ## Insights
 
-When looking at how we wanted to build our model, we needed some insights on the data. First we looked at a box plot of number of points scored by each position, while accounting for home vs. away games.
+-When looking at how we wanted to build our model, we needed some insights on the data. First we looked at a box plot of number of points scored by each position, while accounting for home vs. away games.
 
 ```{r, out.width="50%"}
 library(ggplot2)
@@ -66,7 +66,7 @@ p
 
 ## Insights
 
-Another thing that we were interested in when building the model was how minutes played effect scoring. A key stat to look at for this is called points per minute. So again we looked at a box plot of number of points per minute scored by each position, while accounting for home vs. away games.
+-Another thing that we were interested in when building the model was how minutes played effect scoring. A key stat to look at for this is called points per minute. So again we looked at a box plot of number of points per minute scored by each position, while accounting for home vs. away games.
 
 ```{r, out.width="50%", warning=FALSE}
 p2 <- ggplot(box, aes(x=playPos, y=(playPTS/playMin), fill = teamLoc)) + 
@@ -79,11 +79,11 @@ p2
 
 ## Suns vs. Bucks
 
-More specifically we are interested in how well we can predict the score of Phoenix Suns players when they play the Milwaukee Bucks. In order to do we this we further subset the data from 28 variables and 155,489 observations to 28 variables and 124 observations.
+-More specifically we are interested in how well we can predict the score of Phoenix Suns players when they play the Milwaukee Bucks. In order to do we this we further subset the data from 28 variables and 155,489 observations to 28 variables and 124 observations.
 
-This new data set contains the box score for all players on the Suns when they have played the Bucks since 2012.
+-This new data set contains the box score for all players on the Suns when they have played the Bucks since 2012.
 
-We looked at another box plot of points per minute vs positions for both home and away games. The graph looks similar to the points per minute by position for all games since 2012.
+-We looked at another box plot of points per minute vs positions for both home and away games. The graph looks similar to the points per minute by position for all games since 2012.
 
 ## Suns vs. Bucks
 
@@ -97,7 +97,7 @@ p4
 
 ## Suns vs. Bucks
 
-The final thing that we wanted to look at was the minutes vs points for both home and away games. We wanted to look at this to see if we should slightly adjust our model for when games are either home or away. 
+-The final thing that we wanted to look at was the minutes vs points for both home and away games. We wanted to look at this to see if we should slightly adjust our model for when games are either home or away. 
 
 ```{r, out.width="50%"}
 p3 <- ggplot(suns_bucks, aes(x=playMin, y = playPTS, color = teamLoc)) + 
@@ -112,17 +112,25 @@ p3
 
 ## Suns vs. Bucks
 
-As we can see by the plot there is not much difference minutes vs points for home vs away games when the Suns play the Bucks since 2012.
+-As we can see by the plot there is not much difference minutes vs points for home vs away games when the Suns play the Bucks since 2012.
 
-Overall, we can see that there should not be any adjustment in our model for home and away games. The three different graphs showed not much difference between them.
+-Overall, we can see that there should not be any adjustment in our model for home and away games. The three different graphs showed not much difference between them.
 
-Another interesting thing to note is the mean points scored by an NBA player for all NBA games since 2012 is 9.69 ppm and the mean for all Suns vs. Bucks games since 2012 is 10 ppm. The median points scored by an NBA player for all NBA games since 2012 is 8, and the median for all Suns players against the Bucks since 2008 is also 8. This is interesting because there are many out lairs in the data.
+-Another interesting thing to note is the mean points scored by an NBA player for all NBA games since 2012 is 9.69 ppm and the mean for all Suns vs. Bucks games since 2012 is 10 ppm. The median points scored by an NBA player for all NBA games since 2012 is 8, and the median for all Suns players against the Bucks since 2008 is also 8. This is interesting because there are many out lairs in the data.
 
 ## Using a Normal Distribtion
 
-As we know, there are stars that score lots of points every game, but the majority of players do not score very much.
+-As we know, there are stars that score lots of points every game, but the majority of players do not score very much.
 
-To make sure we can account for this is to build a normal distribution with tweaks, using the mean and standard deviation of the players statistics, and repeatedly sample from that.We generated a distribution of a players game results, using the statistics of his history. This allows us to build a distribution of thousands of games, rather than just the limited historical data that exists.
+-To make sure we can account for this is to build a normal distribution with tweaks, using the mean and standard deviation of the players statistics, and repeatedly sample from that.We generated a distribution of a players game results, using the statistics of his history. This allows us to build a distribution of thousands of games, rather than just the limited historical data that exists.
 
-For the number of simulations requested, and for an individual player, the function randomly samples from the distributions we have built for them. It takes one sample of how long they played, multiplied by one sample of how many points they score per minute. This whole process is one game’s simulation
+-For the number of simulations requested, and for an individual player, the function randomly samples from the distributions we have built for them. It takes one sample of how long they played, multiplied by one sample of how many points they score per minute. This whole process is one game’s simulation
 This number is divided by 2, so offensive and defensive statistics are taken into account, and that score is entered into a list.
+
+## Monte Carlo Simulation
+
+## Monte Carlo Simulation
+
+## Comparison
+
+## Conclusion
