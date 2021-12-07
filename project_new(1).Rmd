@@ -101,10 +101,12 @@ knitr::opts_chunk$set(echo = FALSE)
 
 -POR vs LAL example
 
-## Monte Carlo Simulation
+## Interpretation of the Model
 
-## Monte Carlo Simulation
+-This model does not violate the normality assumptions, but is built very simply.
 
-## Comparison
+-This model is built only using data from 2014-2018. Therefore it is only effective for making a prediction for a game in 2018.
+
+-The construction of this model is very simple and does not predict game outcomes with great accuracy or certainty. Be wary if you this model for your own sports betting purposes.
 
 ## Conclusion
