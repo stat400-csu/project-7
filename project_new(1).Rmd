@@ -111,5 +111,32 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Monte Carlo Simulation
 
+```{r monte}
+over_under_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) + ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+```
 
+## Monte Carlo Simulation
+
+```{r monte plot}
+outcomes
+```
+## Comparison
+
+```{r comparison}
+games <- c(204, 245, 231, 253, 249, 238, 225, 212, 193)
+mean(games)
+sd(games)
+```
 ## Conclusion
