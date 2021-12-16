@@ -171,6 +171,7 @@ mean(por_lal)
 
 ```{r comparison}
 games <- c(204, 245, 231, 253, 249, 238, 225, 212, 193)
+games
 mean(games)
 sd(games)
 ```
