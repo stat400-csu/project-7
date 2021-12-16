@@ -23,6 +23,84 @@ For this project we looked specifically at the National Basketball Association. 
 
 Carter Bouley builds his model to look at individual players statistics when they are playing against another team. Instead of doing that, we thought that it would be interesting to look at team stats instead of individual stats, as well as doing this will make us not have to account for all of the 0's that the Monte Carlo estimation will produce. We were able to find a data set on Kaggle.com that contained all of the team and individual player stats from 2014 to 2018. As you can imagine, this dataset is huge with over 100,000 observations. When we built our models, we wanted to take into account the historical data to model off of, but we do not want the data from 2014 to have as much influence as the data from 2018, so when we did build the models, we had to weigh the data by the recency of the year, where obviously the more recent data has a bigger impact than the data from 2014. 
 
+```{r assumptions}
+game_stats <- read.csv("nba.games.stats.csv")
+game_stats$Date <- substr(game_stats$Date,1,4)
+## Distribution Plots of PTS For and PTS Against by Team in 2018
+game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(TeamPoints,..density..),bins=40) + facet_wrap(~Team)
+game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(OpponentPoints,..density..),bins=40) + facet_wrap(~Team)
+```
+
 Finally, we built a couple models. The first being a spread model and the second being an over under model. Our model has a few more assumptions, the first being that the game simulation can be done simply. The second is that there are hundreds of factors that can influence the outcome of a game. It is not possible to model something like that without it becoming a black box. So, we will keep the model simple and this way we will be able to understand what it is doing and avoiding the black box. Our model also assumes the points scored by a team is equivalent to their average points for added to their opponent's average points against, divided by 2. For the spread model, we looked at games between the Golden State Warriors and the Cleveland Cavaliers. We picked these because our most recent data is from 2018, and in 2018, the Warriors and the Cavaliers were the two teams in the finals. First we built a function called game_outcome that takes parameters of the home team and away team and simulates the points for and against using the rnorm() function in r. We also do the same thing for away points for and against. Then we take the outcomes and average the home and away scores to find the different between the two games.
+
+```{r spread}
+## Spread line mc prediction function
+game_stats_14 <- game_stats %>% filter(Date == "2014")
+team_14 <- game_stats_14 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints),"AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
+
+game_stats_15 <- game_stats %>% filter(Date == "2015")
+team_15 <- game_stats_15 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints),"AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
+
+game_stats_16 <- game_stats %>% filter(Date == "2016")
+team_16 <- game_stats_16 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints),"AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
+
+game_stats_17 <- game_stats %>% filter(Date == "2017")
+team_17 <- game_stats_17 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints),"AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
+
+game_stats_18 <- game_stats %>% filter(Date == "2018")
+team_18 <- game_stats_18 %>% group_by(Team) %>% summarise("AvgPtsFor" = mean(TeamPoints), "AvgPtsAgt" = mean(OpponentPoints), "SDPtsFor" = sd(TeamPoints), "SDPtsAgt" = sd(OpponentPoints))
+
+## Weighting the data based on recency
+
+wgt_pts_for <- team_18$AvgPtsFor*.85 + team_17$AvgPtsFor*.1 + team_16$AvgPtsFor*.02 + team_15$AvgPtsFor*.02 + team_14$AvgPtsFor*.01
+wgt_pts_agt <- team_18$AvgPtsAgt*.85 + team_17$AvgPtsAgt*.1 + team_16$AvgPtsAgt*.02 + team_15$AvgPtsAgt*.02 + team_14$AvgPtsAgt*.01
+wgt_sd_for <- team_18$SDPtsFor*.85 + team_17$SDPtsFor*.1 + team_16$SDPtsFor*.02 + team_15$SDPtsFor*.02 + team_14$SDPtsFor*.01
+wgt_sd_agt <- team_18$SDPtsAgt*.85 + team_17$SDPtsAgt*.1 + team_16$SDPtsAgt*.02 + team_15$SDPtsAgt*.02 + team_14$SDPtsAgt*.01
+
+wgt_pts_stats <- cbind(wgt_pts_for,wgt_pts_agt,wgt_sd_for,wgt_sd_agt)
+row.names(wgt_pts_stats) <- team_18$Team
+
+game_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) - ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+## 10000 MC samples of Golden State vs Cleveland Point Differential
+gsw_cle <- game_outcome(wgt_pts_stats,"GSW","CLE",10000)
+ggplot() + geom_histogram(aes(gsw_cle,..density..),bins=40) + xlab("Point Differential Outcomes of GSW vs CLE")
+```
+```{r mean1}
+mean(gsw_cle)
+```
+```{r overunder}
+## Over/Under line mc prediction function
+over_under_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) + ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+por_lal <- over_under_outcome(wgt_pts_stats,"POR","LAL",10000)
+## 10000 MC samples of Portland vs Boston Point Totals
+ggplot() + geom_histogram(aes(por_lal,..density..),bins=40) + xlab("Point Total Outcomes of POR vs LAL")
+```
+```{r mean2}
+mean(por_lal)
+```
 
 #Conclusions
