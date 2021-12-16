@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #Introduction
 
+Sports betting has been a very widely covered topic and continues to be a very popular activity for all sports fans across all demographics.  Most of the major sports leagues, including the NFL and NBA, over the years have adopted policies to allow for even more sports betting to occur across the country. Nevada is no longer the only state that it is legal for sports betting to occur. As this highly marketed and highly profitable industry continues to gain even more popularity, it seemed like a good idea to try to create a better model for predicting game scores through the use of Monte Carlo simulations. The main goal of our paper is to design a model based on various factors in the NBA to simulate a total score on an NBA game and compare that to what the money line for the game that is given by the sports betting casinos. We hope to obtain a model that can predict with accuracy if we should bet on the game in question or not.
+
 #Background
 
 #Why Monte Carlo?
