@@ -10,10 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 #Introduction
+For our final project we wanted to replicate something that had to do with sports. After some digging we found an article called "Predict NBA Player Lines with Monte Carlo Simulation" by Carter Bouley. In his work he uses Monte Carlo to simulate thousands of NBA games and find not only a single estimate for how many points a player will score during the game, but a distribution of that players scoring over the thousands of games. All of us thought that it would be interesting as well as useful to simulate something like this.
 
-Sports betting has been a very widely covered topic and continues to be a very popular activity for all sports fans across all demographics.  Most of the major sports leagues, including the NFL and NBA, over the years have adopted policies to allow for even more sports betting to occur across the country. Nevada is no longer the only state that it is legal for sports betting to occur. As this highly marketed and highly profitable industry continues to gain even more popularity, it seemed like a good idea to try to create a better model for predicting game scores through the use of Monte Carlo simulations. The main goal of our paper is to design a model based on various factors in the NBA to simulate a total score on an NBA game and compare that to what the money line for the game that is given by the sports betting casinos. We hope to obtain a model that can predict with accuracy if we should bet on the game in question or not.
+So how does sports betting work? When the oddsmakers release the betting line, they will try to accurately predict what is going to happen in a game. There are all types of things that you can bet on for a game. Take basketball for example, you can bet on things like the team to win, how much they will win by (this is called the spread), how many points and other stats players will produce, the total points for a game, the first player to score, etc.. For an example, we will look at the total points scored between two teams. When the oddsmakers release the betting line, you can bet on the total amount of points that they predict will be scored in that game, you can either predict the over or the under. In sports betting the odds will show as negative or positive. Negative means that it is favored to happen, while positive means that it is the underdog. For example, say the total points estimated to be scored in a basketball game is 200. This is a little low, so the odds that the score will be over that is -150, while the odds that the total score is under 200 will be +200. This means that if you bet $100 on the total points to be over 200, with -150 odds, you will win $66.67 and be returned with $166.67. If you bet $100 that the total points for the game will be under 200 with +200 odds, then you will win $200 and be returned with $300.
 
-#Background
+Like one would think, it is hard to make money in sports betting over the long term. The famous saying, "The house always wins" has a lot of truth to it. Given this, the motivation behind our project was that we might be able to use new these statistical methods to try and get an edge on the sportsbook. The rule of thumb is that a sport better needs to be winning at least 52.4% of their bets to just break even over the long run. There is a reason that the casinos and sports books have so much money, it is because most of the time they win. If we could use Monte Carlo simulation to estimate game lines, then maybe we can get a little bit of a mathematical edge on the sports book and boost winning percentages to over 52.4%. There are professional sports betters who are betting on these sportsbooks that consistently turn a profit. While they might be in the minority, it is at least possible to be wiser than the crowd.
+
+Most sports betters use what is called the "Efficient marketplace hypothesis". This suggests that all of the pricing within the sports book reflects all of the available information. In more simple terms, the prices on any event should always accurately reflect that events chance of occurring. Using this information, it is possible that we can build distributions to give us estimates that are not part of the efficient marketplace hypothesis and gain an edge over the sportsbook. Sports books try to accurately reflect what is going to happen in the game, but they also want the money on each side to be split, that way they are consistently turning a profit. If the majority of the public is betting money on one side of the game line, then the sports book will try and alter the line to have more people bet the other side. In order for this to work, we can only use it in markets where there is lots of people betting in the market. There are lots of markets with a lack of interest and people betting, so we do not want to try and estimate these because there is a lower chance that it is correctly priced.
+
 
 #Why Monte Carlo?
 
@@ -25,61 +29,11 @@ Sports betting has been a very widely covered topic and continues to be a very p
 
 #Model Assumptions
 
-```{r assumptions}
-game_stats <- read.csv("nba.games.stats.csv")
-game_stats$Date <- substr(game_stats$Date,1,4)
-## Distribution Plots of PTS For and PTS Against by Team in 2018
-game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(TeamPoints,..density..),bins=40) + facet_wrap(~Team)
-game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(OpponentPoints,..density..),bins=40) + facet_wrap(~Team)
-```
-
 #Model Construction
 
 #Spread Model
 
-```{r spread}
-## Spread line mc prediction function
-game_outcome <- function(dat,home_team, away_team,m){
-  outcomes <- rep(NA,m)
-  for (i in 1:m){
-    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
-    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
-    
-    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
-    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
-    
-    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) - ((away_pts_for + home_pts_agt)/2)
-  }
-  outcomes
-}
-## 10000 MC samples of Golden State vs Cleveland Point Differential
-gsw_cle <- game_outcome(wgt_pts_stats,"GSW","CLE",10000)
-ggplot() + geom_histogram(aes(gsw_cle,..density..),bins=40) + xlab("Point Differential Outcomes of GSW vs CLE")
-mean(gsw_cle)
-```
-
 #Over/Under Model
-
-```{r overunder}
-## Over/Under line mc prediction function
-over_under_outcome <- function(dat,home_team, away_team,m){
-  outcomes <- rep(NA,m)
-  for (i in 1:m){
-    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
-    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
-    
-    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
-    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
-    
-    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) + ((away_pts_for + home_pts_agt)/2)
-  }
-  outcomes
-}
-por_lal <- over_under_outcome(wgt_pts_stats,"POR","LAL",10000)
-## 10000 MC samples of Portland vs Boston Point Totals
-ggplot() + geom_histogram(aes(por_lal,..density..),bins=40) + xlab("Point Total Outcomes of POR vs LAL")
-mean(por_lal)
-```
 
 #Intepretation
 
