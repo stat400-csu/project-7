@@ -176,3 +176,7 @@ mean(games)
 sd(games)
 ```
 ## Conclusion
+
+- While the models we created are not extremely accurate, they properly use Monte Carlo simulation to predict the statistic.
+
+- Typically, these predictive models do not work all that well in sports as there are so many determining factors to the outcome of a game, and the importance of those factors can change day to day. 
