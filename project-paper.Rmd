@@ -18,12 +18,7 @@ Like one would think, it is hard to make money in sports betting over the long t
 
 Most sports betters use what is called the "Efficient marketplace hypothesis". This suggests that all of the pricing within the sports book reflects all of the available information. In more simple terms, the prices on any event should always accurately reflect that events chance of occurring. Using this information, it is possible that we can build distributions to give us estimates that are not part of the efficient marketplace hypothesis and gain an edge over the sportsbook. Sports books try to accurately reflect what is going to happen in the game, but they also want the money on each side to be split, that way they are consistently turning a profit. If the majority of the public is betting money on one side of the game line, then the sports book will try and alter the line to have more people bet the other side. In order for this to work, we can only use it in markets where there is lots of people betting in the market. There are lots of markets with a lack of interest and people betting, so we do not want to try and estimate these because there is a lower chance that it is correctly priced.
 
-
-#Why Monte Carlo?
-
-#Randomness
-
-#Bouley's Results
+Monte Carlo simulation is especially useful when there is a lot of randomness and variation when predicting an event. Instead of determining a result with a degree of uncertainty like most algorithms do, it instead uses a range of probabilities to give us a result. This is important because when we want to be able to accurately simulate games to be able to build fair lines that we can then compare against the sports book. There is so much randomness in sports such as injuries, lineup changes, coaching changes, illness, weather, fans, etc. The list really does go on and on, so looking at all of the historical data might not help us much. Instead, it will be more useful to predict game lines using Monte Carlo estimation instead of using the historical data. It is also going to be important for us to be able to be simulating a large number of games. Since there is so much randomness within games, we will need to be simulating at least a thousand games. Having a large sample size of games that we simulate will give us a much better estimation of the true outcome. It is important to remember that casinos make their money over the long run. They are not concerned with what happens with one game, but instead what happens over thousands of games.
 
 #Model
 
