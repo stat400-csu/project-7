@@ -1,0 +1,36 @@
+---
+title: "project-paper"
+author: "Jack Allen, Danny Laposata, Artie Palen"
+date: "December 16, 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction
+
+#Background
+
+#Why Monte Carlo?
+
+#Randomness
+
+#Bouley's Results
+
+#Model
+
+#Model Assumptions
+
+#Model Construction
+
+#Spread Model
+
+#Over/Under Model
+
+#Intepretation
+
+#Comparison
+
+#Conclusions
