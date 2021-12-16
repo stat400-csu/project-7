@@ -23,11 +23,61 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #Model Assumptions
 
+```{r assumptions}
+game_stats <- read.csv("nba.games.stats.csv")
+game_stats$Date <- substr(game_stats$Date,1,4)
+## Distribution Plots of PTS For and PTS Against by Team in 2018
+game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(TeamPoints,..density..),bins=40) + facet_wrap(~Team)
+game_stats %>% group_by(Team) %>% ggplot() + geom_histogram(aes(OpponentPoints,..density..),bins=40) + facet_wrap(~Team)
+```
+
 #Model Construction
 
 #Spread Model
 
+```{r spread}
+## Spread line mc prediction function
+game_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) - ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+## 10000 MC samples of Golden State vs Cleveland Point Differential
+gsw_cle <- game_outcome(wgt_pts_stats,"GSW","CLE",10000)
+ggplot() + geom_histogram(aes(gsw_cle,..density..),bins=40) + xlab("Point Differential Outcomes of GSW vs CLE")
+mean(gsw_cle)
+```
+
 #Over/Under Model
+
+```{r overunder}
+## Over/Under line mc prediction function
+over_under_outcome <- function(dat,home_team, away_team,m){
+  outcomes <- rep(NA,m)
+  for (i in 1:m){
+    home_pts_for <- rnorm(1,dat[home_team,1],dat[home_team,3])
+    home_pts_agt <- rnorm(1,dat[home_team,2],dat[home_team,4])
+    
+    away_pts_for <- rnorm(1,dat[away_team,1],dat[away_team,3])
+    away_pts_agt <- rnorm(1,dat[away_team,2],dat[away_team,4])
+    
+    outcomes[i] <- ((home_pts_for + away_pts_agt) / 2) + ((away_pts_for + home_pts_agt)/2)
+  }
+  outcomes
+}
+por_lal <- over_under_outcome(wgt_pts_stats,"POR","LAL",10000)
+## 10000 MC samples of Portland vs Boston Point Totals
+ggplot() + geom_histogram(aes(por_lal,..density..),bins=40) + xlab("Point Total Outcomes of POR vs LAL")
+mean(por_lal)
+```
 
 #Intepretation
 
