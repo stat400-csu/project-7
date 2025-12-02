@@ -1,0 +1,5 @@
+---
+title: "STAT 400 Project – Replication"
+author: "Theyab Alkhoori"
+output: pdf_document
+---
