@@ -1,0 +1,13 @@
+---
+title: "STAT 400 – Monte Carlo Study"
+author: "Theyab Alkhoori"
+output: ioslides_presentation
+---
+
+# Overview
+
+# Methods
+
+# Results
+
+# Conclusion
