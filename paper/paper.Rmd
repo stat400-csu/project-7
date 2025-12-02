@@ -1,0 +1,19 @@
+---
+title: "STAT 400 Project – Replication"
+author: "Theyab Alkhoori, kelsey Britton"
+output: pdf_document
+---
+
+# Introduction
+
+
+# Methods
+
+
+# Results
+
+
+# Discussion
+
+
+# References
