@@ -4,7 +4,15 @@ author: "Theyab Alkhoori"
 output: pdf_document
 ---
 # Introduction
+The goal of this project is to replicate and extend the Monte Carlo simulation study described in the article:
 
+*A Comparison of Green, Delta, and Monte Carlo Methods to Select an Optimal Approach for Calculating the 95% Confidence Interval of the Population-Attributable Fraction.*
+
+This study evaluates three methods for constructing confidence intervals for the Population-Attributable Fraction (PAF):
+
+- Green method  
+- Delta method  
+- Monte Carlo method  
 # Methods
 
 # Results
