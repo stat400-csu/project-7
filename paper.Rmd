@@ -26,9 +26,6 @@ The simulation calculates PAF for different scenarios using published values of 
 ## PAF Calculation
 The true PAF is computed using:
 
-\[
-PAF = \frac{Pe(RR - 1)}{Pe(RR - 1) + 1}
-\]
 
 (Implemented in `paf_single()`.)
 
