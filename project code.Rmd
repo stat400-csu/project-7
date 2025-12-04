@@ -1,6 +1,6 @@
 ---
 title: "project code"
-author: "Kelsey Britton"
+author: "Kelsey Britton, Theyab Alkhoori"
 output: html_document
 ---
 
