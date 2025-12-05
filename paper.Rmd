@@ -22,38 +22,91 @@ We replicated the simulation design from the article *A Comparison of Green, Del
 The simulation calculates PAF for different scenarios using published values of exposure prevalence (Pe), total population size (Tp), and risk ratio (RR). All functions used for PAF estimation and CI construction are implemented in R.
 
 ---
+## Notations and definitions in this study
+- **PAF**: Population-attributable fraction  
+- **Pe**: Prevalence of exposure in the total population  
+- **RR**: Relative risk for the exposed group  
+- **Tp**: Total population size  
+- **V[β]**: Variance of the log(RR) estimator  
+- **V[Pe]**: Variance of the exposure prevalence estimator  
+- **CI**: 95% confidence interval for the PAF  
 
-## PAF Calculation
-The true PAF is computed using:
+## PAF Formula
+The PAF was estimated using the Levin formula, which depends on the exposure prevalence and the risk ratio:
 
+\[
+PAF = \frac{Pe(RR - 1)}{Pe(RR - 1) + 1}
+\]
 
-(Implemented in `paf_single()`.)
+This formula is implemented in the function `paf_single()`.
 
 ---
 
 ## Confidence Interval Methods
 
 ### Delta Method
-Uses a Taylor approximation to estimate the variance of PAF and builds a standard Wald-type CI.  
-(Implemented in `delta_paf_ci()`.)
+The Delta method uses a Taylor series approximation to estimate the variance of the PAF estimator.  
+The variance of PAF is computed using the variances of Pe and β (log(RR)), following the structure:
 
-### Greenland (Green) Method
-Uses a variance-stabilizing transformation of \(1 - PAF\) before constructing the CI.  
-(Implemented in `greenland_paf_ci()`.)
+\[
+V[\widehat{PAF}] = \frac{V[Pe](RR - 1)^2 + V[β](RR \cdot Pe)^2}{(Pe(RR - 1) + 1)^4}
+\]
 
-### Monte Carlo Method
-Simulates many possible values of log(RR) and Pe, computes PAF repeatedly, and uses the 2.5% and 97.5% percentiles as the CI limits.  
-(Implemented in `mc_paf_ci()`.)
+A 95% CI is then constructed as:
+
+\[
+PAF \pm 1.96 \times \sqrt{V[\widehat{PAF}]}
+\]
+
+This procedure is implemented in `delta_paf_ci()`.
 
 ---
 
-## Simulation Scenarios
-Two scenarios from the article were replicated:
+### Greenland (Green) Method
+The Greenland method uses a variance-stabilizing transformation of \(1 - PAF\), incorporating the odds of exposure:
 
-- **Scenario A:** \( Pe = 0.10, Tp = 1000, RR = 1.2 \)  
-- **Scenario B:** \( Pe = 0.10, Tp = 100{,}000, RR = 5.0 \)
+\[
+O = \frac{Pe}{1 - Pe}
+\]
 
-For each scenario, PAF and 95% CIs were calculated using all three methods.
+This method accounts for variability in both the RR and Pe.  
+After computing the transformed variance, the 95% CI is back-transformed to the PAF scale:
+
+\[
+CI = 1 - (1 - PAF) \exp(\pm 1.96 \sqrt{V[\widehat{PAF}]})
+\]
+
+Implemented in `greenland_paf_ci()`.
+
+---
+
+### Monte Carlo Method
+The Monte Carlo method generates random samples for log(RR) and Pe:
+
+- \( \beta = \log(RR) \) is sampled from a normal distribution with variance V[β]  
+- Pe is sampled from a binomial distribution with variance V[Pe]
+
+For each simulation, a new PAF is computed.  
+The 95% CI is defined as the 2.5th and 97.5th percentiles of the simulated PAF distribution.
+
+Implemented in `mc_paf_ci()`.
+
+---
+
+## Simulation Design
+We replicated two scenarios from the original article to evaluate and compare CI performance across different parameter settings:
+
+## Scenario A (Weak association)**
+- \( Pe = 0.10 \)
+- \( Tp = 1000 \)
+- \( RR = 1.2 \)
+
+## Scenario B (Strong association)**
+- \( Pe = 0.10 \)
+- \( Tp = 100{,}000 \)
+- \( RR = 5.0 \)
+
+For each scenario, the true PAF was computed using the Levin formula, and 95% CIs were obtained using all three methods (Delta, Greenland, Monte Carlo).
 
 ---
 # Results
