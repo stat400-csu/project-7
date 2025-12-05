@@ -124,6 +124,7 @@ scenarioA_results <- data.frame(
   AF = c(delta_A["AF"], green_A["AF"], mc_A["AF"]),
   lower = c(delta_A["low"], green_A["low"], mc_A["low"]),
   upper = c(delta_A["up"], green_A["up"], mc_A["up"])
+)
 scenarioA_results
 ```
 
