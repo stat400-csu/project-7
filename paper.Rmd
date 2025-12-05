@@ -1,6 +1,6 @@
 ---
 title: "STAT 400 Project – Replication"
-author: "Theyab Alkhoori"
+author: "Theyab Alkhoori, Kelsey Britton"
 output: pdf_document
 ---
 # Introduction
@@ -13,8 +13,49 @@ This study evaluates three methods for constructing confidence intervals for the
 - Green method  
 - Delta method  
 - Monte Carlo method  
+
 # Methods
 
+## Simulation Overview
+We replicated the simulation design from the article *A Comparison of Green, Delta, and Monte Carlo Methods…* to estimate the Population-Attributable Fraction (PAF) and compare three confidence interval (CI) methods: the Delta method, the Greenland (Green) method, and the Monte Carlo method.
+
+The simulation calculates PAF for different scenarios using published values of exposure prevalence (Pe), total population size (Tp), and risk ratio (RR). All functions used for PAF estimation and CI construction are implemented in R.
+
+---
+
+## PAF Calculation
+The true PAF is computed using:
+
+
+(Implemented in `paf_single()`.)
+
+---
+
+## Confidence Interval Methods
+
+### Delta Method
+Uses a Taylor approximation to estimate the variance of PAF and builds a standard Wald-type CI.  
+(Implemented in `delta_paf_ci()`.)
+
+### Greenland (Green) Method
+Uses a variance-stabilizing transformation of \(1 - PAF\) before constructing the CI.  
+(Implemented in `greenland_paf_ci()`.)
+
+### Monte Carlo Method
+Simulates many possible values of log(RR) and Pe, computes PAF repeatedly, and uses the 2.5% and 97.5% percentiles as the CI limits.  
+(Implemented in `mc_paf_ci()`.)
+
+---
+
+## Simulation Scenarios
+Two scenarios from the article were replicated:
+
+- **Scenario A:** \( Pe = 0.10, Tp = 1000, RR = 1.2 \)  
+- **Scenario B:** \( Pe = 0.10, Tp = 100{,}000, RR = 5.0 \)
+
+For each scenario, PAF and 95% CIs were calculated using all three methods.
+
+---
 # Results
 Plots from the simulation will be included here.
 # Discussion

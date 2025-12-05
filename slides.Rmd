@@ -1,6 +1,6 @@
 ---
 title: "STAT 400 – Monte Carlo Study"
-author: "Theyab Alkhoori"
+author: "Theyab Alkhoori, Kelsey Britton"
 output: ioslides_presentation
 ---
 
