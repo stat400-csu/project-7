@@ -1,9 +1,9 @@
 ---
 title: "STAT 400 Group 7 Paper DRAFT"
 author: "Group7"
-output: html_document
+output: pdf_document
 ---
-
+ 
 ```{r setup, echo = FALSE}
 set.seed(400)
 
@@ -365,6 +365,10 @@ boundary_B
 
 
 # Discussion
+
+This study compared three methods for constructing confidence intervals for the population-attributable fraction (PAF): the Delta method, the Greenland method, and a Monte Carlo simulation–based approach. Using two parameter scenarios taken directly from Lee et al. (2024), we evaluated how these methods behave under small PAF values with modest effect size (Scenario A) and large PAF values with strong effect size (Scenario B). Across both settings, our results were consistent with the patterns reported by Lee et al., supporting their conclusions.
+
+Our extension analysis further emphasized the importance of boundary-aware CI methods. By evaluating how often each method generated values outside the [0,1] range, we showed that Monte Carlo provides the best protection against invalid intervals in both mild (Scenario A) and extreme (scenario B) parameter settings. Our simulation suggests that the Monte Carlo method provides the most reliable confidence interval estimation for the population-attributable fraction.
 
 # References
 ADD FOR FINAL
