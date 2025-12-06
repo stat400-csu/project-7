@@ -1,25 +1,37 @@
 ---
-title: "STAT 400 Project – Replication"
-author: "Theyab Alkhoori, Kelsey Britton"
+title: "STAT 400 Monte Carlo Project DRAFT"
+author: "Group 7: Theyab Alkhoori, Kelsey Britton"
 output: pdf_document
 ---
 # Introduction
-The goal of this project is to replicate and extend the Monte Carlo simulation study described in the article:
 
-*A Comparison of Green, Delta, and Monte Carlo Methods to Select an Optimal Approach for Calculating the 95% Confidence Interval of the Population-Attributable Fraction.*
+The population-attributable fraction (PAF) is used in epidemiology to quantify how many cases of a disease can be attributed to a specific exposure or the reduction in cases that could be achieves if the exposure were to be eliminated (https://pmc.ncbi.nlm.nih.gov/articles/PMC1508384/?page=1). PAF can be defined as: 
 
-This study evaluates three methods for constructing confidence intervals for the Population-Attributable Fraction:
+\[
+PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
+\]
+
+where $P_e$ is the proportion of the population that is exposed and RR is the relative risk, or the proportion of cases in the exposed over the proportion in the unexposed (https://pmc.ncbi.nlm.nih.gov/articles/PMC1508384/?page=3).
+
+The article *A Comparison of Green, Delta, and Monte Carlo Methods to Select an Optimal Approach for Calculating the 95% Confidence Interval of the Population-Attributable Fraction.* by Lee et al. compared three methods for computing confidence intervals for PAFs: 
 
 - Green method  
 - Delta method  
 - Monte Carlo method  
 
+This project aims to replicate two of the scenarios used in the article and extend this by evaluating how often the three methods produce intervals that are outside of the logical bound of [0,1], which would indicate a proportion of the cases either less than 0% or greater than 100%.
+
 # Methods
 
 ## Simulation Overview
-We replicated the simulation design from the article *A Comparison of Green, Delta, and Monte Carlo Methods…* to estimate the Population-Attributable Fraction (PAF) and compare three confidence interval (CI) methods: the Delta method, the Greenland (Green) method, and the Monte Carlo method.
 
-The simulation calculates PAF for different scenarios using published values of exposure prevalence (Pe), total population size (Tp), and risk ratio (RR). All functions used for PAF estimation and CI construction are implemented in R.
+We replicated the simulation design from the article *A Comparison of Green, Delta, and Monte Carlo Methods…* to estimate the Population-Attributable Fraction (PAF) and compare three confidence interval (CI) methods: the Delta method, the Greenland (Green) method, and the Monte Carlo method based on two scenarios in Lee et al. (2024):
+
+-Scenario A: Modest effect size (RR = 1.2), moderate prevalence (Pe = 0.10), sample size Tp = 1,000.
+
+-Scenario B: Strong effect size (RR = 5.0), same prevalence, large sample size Tp = 100,000.
+
+Then a simulation study with $n = 500$ iterations was performed on each scenario to determine the proportion of CIs containign the true PAF, average CI width, and the the proportion of CIs that violated the [0,1] boundary.
 
 ---
 ## Notations and definitions in this study
@@ -94,23 +106,20 @@ Implemented in `mc_paf_ci()`.
 ---
 
 ## Simulation Design
-We replicated two scenarios from the original article to evaluate and compare CI performance across different parameter settings:
 
-## Scenario A (Weak association)**
-- \( Pe = 0.10 \)
-- \( Tp = 1000 \)
-- \( RR = 1.2 \)
+For each scenario, we:
 
-## Scenario B (Strong association)**
-- \( Pe = 0.10 \)
-- \( Tp = 100{,}000 \)
-- \( RR = 5.0 \)
-
-For each scenario, the true PAF was computed using the Levin formula, and 95% CIs were obtained using all three methods (Delta, Greenland, Monte Carlo).
+1. Drew RR* from a log-normal distribution and Pe* from a binomial distribution.
+2. Computed CIs using the three methods.
+3. Recorded Ci coverage and width.
+4. Calculated the proportion of CIs that had values outside of our logical boundaries.
 
 ---
 # Results
-Plots from the simulation will be included here.
+
+
+
 # Discussion
 
 # References
+ADD FOR FINAL
