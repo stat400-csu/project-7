@@ -1,10 +1,24 @@
 ---
-title: "STAT 400 – Monte Carlo Study"
-author: "Theyab Alkhoori, Kelsey Britton"
+title: "Comparing Greenland, Delta, and Monte Carlo Methods for PAF Confidence Intervals"
+author: "Group 7: Theyab Alkhoori & Kelsey Britton"
 output: ioslides_presentation
 ---
+```{r setup, include=FALSE}
+set.seed(400)
+knitr::opts_chunk$set(echo = FALSE)
+```
 
-# Overview
+## Introduction
+
+
+- $PAF$ - Population Attributable Fraction
+- $RR$ - Relative Risk
+- $P_e$ - proportion of the popualtion exposed
+  
+- PAF Formula: 
+\[
+PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
+\]
 
 # Methods
 
