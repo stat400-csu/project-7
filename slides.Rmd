@@ -20,8 +20,22 @@ knitr::opts_chunk$set(echo = FALSE)
 PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 \]
 
-# Methods
+## CI Methods
 
+- Delta Method
+- Greenland Method
+- Monte Carlo
+
+## Project Outline
+
+- Replicate scenario from *A Comparison of Green, Delta, and Monte Carlo Methods to Select an Optimal Approach for Calculating the 95% Confidence Interval of the Population-Attributable Fraction.* by Lee et al.
+
+- Compare:
+  - PAF estimates
+  - CI width
+  - Coverage Probability
+  - How often CIs leave the our "valid range" of [0,1]
+  
 # Results
 
 # Conclusion
