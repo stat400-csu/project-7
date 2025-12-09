@@ -41,6 +41,8 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 
 ## CI Methods Compared
 
+**Based on:** A Comparison of Green, Delta, and Monte Carlo Methods to Select an Optimal Approach for Calculating the 95% Confidence Interval of the Population-Attributable Fraction.* by Lee et al. (2024)
+
 - Delta Method
   - Taylor-series linear approximation
   - Fast but struggles with nonlinear functions
