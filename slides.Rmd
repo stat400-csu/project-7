@@ -89,7 +89,7 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 ```{r}
 kable(
 scenarioA_results,
-digits = 4,
+digits = 5,
 caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: PAF estimates and 95% CIs.</span>"
 )
 ```
@@ -107,7 +107,7 @@ caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: Coverage a
 ```{r}
 kable(
   boundary_A,
-  digits = 3,
+  digits = 5,
   caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: Proportion of CIs outside the [0,1] interval</span>"
 )
 ```
@@ -141,7 +141,7 @@ For small $PAF$s, Monte Carlo is the most reliable of the three
 ```{r}
 kable(
   scenarioB_results,
-  digits = 4,
+  digits = 5,
   caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: PAF estimates and 95% CIs.</span>"
 )
 ```
@@ -162,7 +162,7 @@ kable(
 ```{r}
 kable(
   boundary_B,
-  digits = 3,
+  digits = 5,
   caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: Proportion of CIs outside the [0,1] range</span>"
 )
 ```
@@ -275,7 +275,7 @@ Monte Carlo avoids the main problems seen in Delta/Greenland methods.
 - Monte Carlo used 10,000 samples — could explore smaller sizes
 
 - $PAF$ is only valid if RR is a causal effect
-    -$RR$ cannot be confounded or biased
+  -$RR$ cannot be confounded or biased
 
 <small>(Greenland, 2015)</small>
 
