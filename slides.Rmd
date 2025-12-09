@@ -73,6 +73,24 @@ caption = "Scenario A: Coverage and mean CI width."
 - True PAF : 0.2857 
 - Number of Simulations : 500
 
+##
+
+```{r}
+kable(
+  scenarioB_results,
+  digits = 5,
+  caption = "Scenario B: PAF estimates and 95% CIs."
+)
+```
+##
+
+```{r}
+kable(
+  coverage_width_B,
+  digits = 4,
+  caption = "Scenario B: Coverage and mean CI width."
+)
+```
 # Results
 
 # Conclusion
