@@ -3147,7 +3147,7 @@ ul.task-list{list-style: none;}
 <ul>
 <li><p>\(PAF\) - Population Attributable Fraction</p></li>
 <li><p>\(RR\) - Relative Risk</p></li>
-<li><p>\(P_e\) - proportion of the popualtion exposed</p></li>
+<li><p>\(P_e\) - proportion of the population exposed</p></li>
 <li><p>PAF Formula: \[
 PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 \]</p></li>
@@ -3174,6 +3174,72 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 <li>How often CIs leave the our &ldquo;valid range&rdquo; of [0,1]</li>
 </ul></li>
 </ul>
+
+</article></slide><slide class=""><hgroup><h2>Scenario A</h2></hgroup><article  id="scenario-a">
+
+<ul>
+<li>Sample Size : 1000</li>
+<li>P_e: 0.10</li>
+<li>RR : 1.2</li>
+<li>True PAF : 0.0196</li>
+<li>Number of Simulations : 500</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section">
+
+<table class = 'rmdtable'>
+<caption>Scenario A: PAF estimates and 95% CIs.</caption>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">PAF</th>
+<th align="right">lower</th>
+<th align="right">upper</th>
+</tr>
+<tr class="odd">
+<td align="left">Delta</td>
+<td align="right">0.01961</td>
+<td align="right">0.00406</td>
+<td align="right">0.03515</td>
+</tr>
+<tr class="even">
+<td align="left">Greenland</td>
+<td align="right">0.01961</td>
+<td align="right">0.00387</td>
+<td align="right">0.03510</td>
+</tr>
+<tr class="odd">
+<td align="left">Monte Carlo</td>
+<td align="right">0.01955</td>
+<td align="right">0.00536</td>
+<td align="right">0.03655</td>
+</tr>
+</table>
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section-1">
+
+<table class = 'rmdtable'>
+<caption>Scenario A: Coverage and mean CI width.</caption>
+<tr class="header">
+<th align="left">method</th>
+<th align="right">cover</th>
+<th align="right">width</th>
+</tr>
+<tr class="odd">
+<td align="left">Delta</td>
+<td align="right">0.956</td>
+<td align="right">0.0313</td>
+</tr>
+<tr class="even">
+<td align="left">Greenland</td>
+<td align="right">0.956</td>
+<td align="right">0.0315</td>
+</tr>
+<tr class="odd">
+<td align="left">Monte Carlo</td>
+<td align="right">0.952</td>
+<td align="right">0.0315</td>
+</tr>
+</table>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Results</h2></hgroup><article  id="results">
 

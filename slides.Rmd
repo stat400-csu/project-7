@@ -5,6 +5,7 @@ output: ioslides_presentation
 ---
 ```{r setup, include=FALSE}
 set.seed(400)
+source("code.R") 
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - $PAF$ - Population Attributable Fraction
 - $RR$ - Relative Risk
-- $P_e$ - proportion of the popualtion exposed
+- $P_e$ - proportion of the population exposed
   
 - PAF Formula: 
 \[
@@ -36,6 +37,35 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
   - Coverage Probability
   - How often CIs leave the our "valid range" of [0,1]
   
+  
+## Scenario A
+
+- Sample Size : 1000
+- P_e: 0.10
+- RR : 1.2
+- True PAF : 0.0196
+- Number of Simulations : 500
+
+## 
+
+```{r}
+kable(
+scenarioA_results,
+digits = 5,
+caption = "Scenario A: PAF estimates and 95% CIs."
+)
+```
+##
+
+```{r}
+kable(
+coverage_width_A,
+digits = 4,
+caption = "Scenario A: Coverage and mean CI width."
+)
+```
+
+
 # Results
 
 # Conclusion
