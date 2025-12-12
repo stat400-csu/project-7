@@ -7,20 +7,21 @@ output:
     css: styles.css
 ---
 ```{r setup, include=FALSE}
-set.seed(400)
-source("code.R") 
-library(ggplot2)
+
+source("Group7SlidesSTAT400CodeSource.R") 
 knitr::opts_chunk$set(echo = FALSE)
+
 ```
 
 ## Introduction: What is the Population-Attributable Fraction?
 
 The Population-Attributable Fraction ($PAF$) measures the proportion of disease cases in a population that can be attributed to an exposure.
 
-- $RR$ - Relative Risk
-- $P_e$ - proportion of the population exposed
+**- $PAF$ depends on:**
+
+  - $RR$ - Relative Risk
+  - $P_e$ - proportion of the population exposed
   
-- $PAF$ Formula: 
 \[
 PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 \]
@@ -33,7 +34,7 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 
 - However, PAF is bounded between 0 and 1, and many common CI methods:
 
-  - Produce negative lower bounds, or
+  - Produce negative lower bounds or
 
   - Upper bounds > 1, which are not interpretable.
 
@@ -66,8 +67,6 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
 
 - Generate 95% CI using Delta, Greenland, and Monte Carlo Methods
 
-## How the Simulation Works (cont.)
-
 - Repeat 500 times
 
 - Compare:
@@ -78,38 +77,43 @@ PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
   
 ## Scenario A (Weak Association & Small PAF)
 
-- Sample Size : 1,000
-- $P_e$: 0.10
-- $RR$ : 1.2
-- True $PAF$ : 0.0196
-- Number of Simulations : 500
+- **Sample Size : **1,000
+- **$P_e$: **0.10
+- **$RR$ : **1.2
+- **True $PAF$ : **0.0196
+- **Number of Simulations : **500
 
 ## 
 
-```{r}
+```{r A results}
+
 kable(
-scenarioA_results,
-digits = 5,
-caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: PAF estimates and 95% CIs.</span>"
-)
+  scenarioA_results,
+  digits = 5,
+  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: PAF estimates and 95% CIs.</span>")
+
+```
+
+##
+
+```{r A coverage}
+
+kable(
+  coverage_width_A,
+  digits = 5,
+  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: Coverage and mean CI width.</span>")
+
 ```
 ##
 
-```{r}
-kable(
-coverage_width_A,
-digits = 5,
-caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: Coverage and mean CI width.</span>",
-)
-```
-##
+```{r A bounds}
 
-```{r}
 kable(
   boundary_A,
   digits = 5,
   caption = "<span style='color:#061d95; font-weight:bold;'>Scenario A: Proportion of CIs outside the [0,1] interval</span>"
 )
+
 ```
 
 ## Interpretation: Scenario A
@@ -124,7 +128,7 @@ kable(
 
 - Delta and Greenland methods are slightly more precise but have a greater tendency to dip below zero when the true $PAF$ is very small
  
- **Conclusion:**
+**Conclusion:**
  
 For small $PAF$s, Monte Carlo is the most reliable of the three
 
@@ -138,43 +142,47 @@ For small $PAF$s, Monte Carlo is the most reliable of the three
 
 ##
 
-```{r}
+```{r B results}
+
 kable(
   scenarioB_results,
   digits = 5,
-  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: PAF estimates and 95% CIs.</span>"
-)
+  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: PAF estimates and 95% CIs.</span>")
+
 ```
 
 
 ##
 
-```{r}
+```{r B coverage}
+
 kable(
   coverage_width_B,
   digits = 5,
-  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: Coverage and mean CI width.</span>"
-)
+  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: Coverage and mean CI width.</span>")
+
 ```
 
 ##
 
-```{r}
+```{r B boundary}
+
 kable(
   boundary_B,
   digits = 5,
-  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: Proportion of CIs outside the [0,1] range</span>"
-)
+  caption = "<span style='color:#061d95; font-weight:bold;'>Scenario B: Proportion of CIs outside the [0,1] range</span>")
+
 ```
 
 ## Interpretation: Scenario B
 
 **Key Takeaways**
+
 - All methods accurately estimate the true $PAF$ and produce similarly sized confidence intervals
 
 - Monte Carlo shows slightly worse coverage here than in Scenario A but still performs well overall
 
-- Delta and Greenland maintain strong coverage but at the cost of more CI values falling outside [0,1].
+- Delta and Greenland maintain strong coverage but at the cost of more CI values falling outside [0,1]
 
 **Conclusion:**
 
@@ -182,21 +190,15 @@ As in Scenario A, Monte Carlo is consistently the most boundary-respecting metho
 
 ##
 
-```{r}
+```{r width plot}
 
-ciwidth <- rbind(
-data.frame(Scenario = "A", coverage_width_A),
-data.frame(Scenario = "B", coverage_width_B)
-)
-
-ggplot(ciwidth, aes(x = method, y = width, fill = Scenario)) +
+ggplot(ciwidth, aes(x = Method, y = Width, fill = Scenario)) +
   geom_col(position = "dodge") +
   scale_fill_manual(values = c(
     "A" = "#ADD8E6",
-    "B" = "#061d95" 
-  )) +
-   ggtitle("Mean CI Width: Scenario A vs. Scenario B") +
-  ylab("Mean Width") +
+    "B" = "#061d95" )) +
+  ggtitle("Mean CI Width: Scenario A vs. Scenario B") +
+  ylab("Mean Width") + 
   coord_cartesian(ylim = c(0.03, 0.0325)) +
   theme_minimal() +
   theme(
@@ -204,17 +206,14 @@ ggplot(ciwidth, aes(x = method, y = width, fill = Scenario)) +
     axis.title = element_text(color = "#1b3b72"),
     axis.text = element_text(color = "#222222")
   )
+
 ```
 
 ##
 
-```{r}
-boundary <- rbind(
-data.frame(Scenario="A", boundary_A),
-data.frame(Scenario="B", boundary_B)
-)
+```{r boundary plot}
 
-ggplot(boundary, aes(method, prob_outside_01, fill=Scenario)) +
+ggplot(boundary, aes(Method, Prob_Outside_Logical_Range, fill=Scenario)) +
   geom_col(position="dodge") +
   scale_fill_manual(values = c(
     "A" = "#ADD8E6",
@@ -228,6 +227,7 @@ ggplot(boundary, aes(method, prob_outside_01, fill=Scenario)) +
     axis.title = element_text(color = "#1b3b72"),
     axis.text = element_text(color = "#222222")
 )
+
 ```
 
 ## Why Monte Carlo Performs Better
@@ -253,12 +253,12 @@ Monte Carlo avoids the main problems seen in Delta/Greenland methods.
 | Method       | Strengths                     | Weaknesses             | Best Use Case                                   |
 |-------------|-------------------------------|------------------------|------------------------------------------------|
 | **Delta**   | Fast, simple                  | Can go below 0         | Large samples, moderate RR and mid-range PAF   |
-| **Greenland** | Adjusted for exposure odds  | Still boundary issues  | Small Pe, moderate RR                          |
+| **Greenland** | Adjusted for exposure odds  | Still has  boundary issues  | Small Pe, moderate RR                          |
 | **Monte Carlo** | Most accurate, best boundaries | More computation    | PAF near 0 or 1, strong RR, boundary-sensitive |
 
 ## Practical Implications for Epidemiology
 
-- Avoid reporting negative CIs or CIs >1
+- Avoid reporting CIs <0 or CIs >1
 
 - Use Monte Carlo when:
 
@@ -274,8 +274,8 @@ Monte Carlo avoids the main problems seen in Delta/Greenland methods.
 
 - Monte Carlo used 10,000 samples — could explore smaller sizes
 
-- $PAF$ is only valid if RR is a causal effect
-  -$RR$ cannot be confounded or biased
+- $PAF$ is only valid if $RR$ is a causal effect
+  - $RR$ cannot be confounded or biased
 
 <small>(Greenland, 2015)</small>
 
@@ -283,8 +283,8 @@ Monte Carlo avoids the main problems seen in Delta/Greenland methods.
 
 **Monte Carlo is the most reliable and interpretable method for constructing confidence intervals for the Population-Attributable Fraction, especially when:**
 
-  - PAF is small
-  - RR is large
+  - $PAF$ is small
+  - $RR$ is large
   - Staying within the logical boundary is necessary
 
 ## References

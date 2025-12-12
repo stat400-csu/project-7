@@ -1,7 +1,10 @@
+## setup
 set.seed(400)
 
 library(knitr)
+library(ggplot2)
 
+## PAF Formulas
 paf_single <- function(Pe, RR) {
   PAF <- (Pe * (RR - 1)) / (Pe * (RR - 1) + 1)
   return(PAF)
@@ -19,24 +22,23 @@ var_Pe <- function(Tp, Pe) {
   return(Var_Pe)
 }
 
-
+## Methods Functions
 delta_paf_ci <- function(Tp, Pe, RR, Lower, Upper){
   PAF <- paf_single(Pe, RR)
   Var_Pe<- var_Pe(Tp,Pe)
   Var_beta <- var_beta_from_CI(RR, Lower, Upper) 
   
-  Delta_Var_PAF <- (((RR - 1)^2) * Var_Pe + ((Pe * RR)^2) *
-                     Var_beta)/((1 + Pe * (RR - 1))^4)
+  Delta_Var_PAF <- (((RR - 1)^2) * Var_Pe + ((Pe * RR)^2) * Var_beta)/((1 + Pe * (RR - 1))^4)
   
   se <- sqrt(Delta_Var_PAF)
-  z  <- qnorm(0.975)
+  z <- qnorm(0.975)
   
   low <- PAF- (z*se)
   up  <- PAF+ (z*se)
   
   out <- c(PAF = PAF,
            low = low,
-           up  = up,
+           up = up,
            var = Delta_Var_PAF)
   return(out)
 }
@@ -48,18 +50,17 @@ greenland_paf_ci <- function(Tp, Pe, RR, Lower, Upper){
   
   O <- Pe / (1 - Pe)
   
-  Green_Var_PAF <- ((O / Tp) * ((RR - 1)^2 + Var_beta * RR^2)+ Var_beta * O^2 *
-                     RR^2) * (1 - PAF)^2 / (1 +O)^2
+  Green_Var_PAF <- ((O / Tp) * ((RR - 1)^2 + Var_beta * RR^2)+ Var_beta * O^2 * RR^2) * (1 - PAF)^2 / (1 +O)^2
   
   se <- sqrt(Green_Var_PAF)
-  z  <- qnorm(0.975)
+  z <- qnorm(0.975)
   
   low <- 1-(1-PAF) * exp(z*se)
-  up  <- 1-(1-PAF) * exp(-z*se)
+  up <- 1-(1-PAF) * exp(-z*se)
   
   out <- c(PAF = PAF,
            low = low,
-           up  = up,
+           up = up,
            var = Green_Var_PAF)
   return(out)
 }
@@ -82,10 +83,11 @@ mc_paf_ci <- function(Tp, Pe, RR, Lower, Upper, B= 10000){
   
   out <- c(PAF = PAF_est,
            low = low,
-           up  = up)
+           up = up)
   return(out)
 }
 
+## Scenario A
 Tp_A <- 1000
 Pe_A <- 0.10
 RR_A <- 1.2
@@ -99,12 +101,13 @@ green_A<- greenland_paf_ci(Tp_A, Pe_A, RR_A, Lower_A, Upper_A)
 mc_A <- mc_paf_ci(Tp_A, Pe_A, RR_A, Lower_A, Upper_A, B = 10000)
 
 scenarioA_results <- data.frame(
-  method = c("Delta", "Greenland", "Monte Carlo"),
+  Method = c("Delta", "Greenland", "Monte Carlo"),
   PAF = c(delta_A["PAF"], green_A["PAF"], mc_A["PAF"]),
-  lower = c(delta_A["low"], green_A["low"], mc_A["low"]),
-  upper = c(delta_A["up"], green_A["up"], mc_A["up"])
+  Lower = c(delta_A["low"], green_A["low"], mc_A["low"]),
+  Upper = c(delta_A["up"], green_A["up"], mc_A["up"])
 )
 
+##Scenario B
 Tp_B <- 100000
 Pe_B <- 0.10
 RR_B <- 5.0
@@ -118,12 +121,13 @@ green_B<- greenland_paf_ci(Tp_B, Pe_B, RR_B, Lower_B, Upper_B)
 mc_B <- mc_paf_ci(Tp_B, Pe_B, RR_B, Lower_B, Upper_B, B = 10000)
 
 scenarioB_results <- data.frame(
-  method = c("Delta", "Greenland", "Monte Carlo"),
+  Method = c("Delta", "Greenland", "Monte Carlo"),
   PAF = c(delta_B["PAF"], green_B["PAF"], mc_B["PAF"]),
-  lower = c(delta_B["low"], green_B["low"], mc_B["low"]),
-  upper = c(delta_B["up"], green_B["up"], mc_B["up"])
+  Lower = c(delta_B["low"], green_B["low"], mc_B["low"]),
+  Upper = c(delta_B["up"], green_B["up"], mc_B["up"])
 )
 
+## Simulations
 one_sim <- function() {
   Var_beta_A <- var_beta_from_CI(RR_A, Lower_A, Upper_A)
   beta_A <- log(RR_A)
@@ -151,28 +155,43 @@ colnames(sims) <- c("delta_low", "delta_up",
                     "green_low", "green_up",
                     "mc_low","mc_up")
 
+## A results
 for (b in 1:n_sim) {
   sims[b, ] <- one_sim()
 }
+
 sims<- as.data.frame(sims)
 
 delta_cover <- (sims$delta_low <= true_PAF_A) & (sims$delta_up>= true_PAF_A)
 green_cover <- (sims$green_low <= true_PAF_A) & (sims$green_up>= true_PAF_A)
-mc_cover<- (sims$mc_low <= true_PAF_A) & (sims$mc_up>= true_PAF_A)
+mc_cover <- (sims$mc_low <= true_PAF_A) & (sims$mc_up>= true_PAF_A)
 
 delta_width <- sims$delta_up - sims$delta_low
 green_width <- sims$green_up - sims$green_low
 mc_width <- sims$mc_up - sims$mc_low
 
 coverage_width_A <- data.frame(
-  method = c("Delta", "Greenland", "Monte Carlo"),
-  cover  = c(mean(delta_cover),
+  Method = c("Delta", "Greenland", "Monte Carlo"),
+  Coverage  = c(mean(delta_cover),
              mean(green_cover),
              mean(mc_cover)),
-  width  = c(mean(delta_width),
+  Width  = c(mean(delta_width),
              mean(green_width),
              mean(mc_width))
 )
+
+delta_bad <- (sims$delta_low < 0) | (sims$delta_up > 1)
+green_bad <- (sims$green_low < 0) | (sims$green_up > 1)
+mc_bad  <- (sims$mc_low < 0) | (sims$mc_up > 1)
+
+boundary_A <- data.frame(
+  Method  = c("Delta", "Greenland", "Monte Carlo"),
+  Prob_Outside_Logical_Range = c(mean(delta_bad),
+                                 mean(green_bad),
+                                 mean(mc_bad))
+)
+
+## B results
 sims_B <- matrix(NA, nrow = n_sim, ncol = 6)
 colnames(sims_B) <- c("delta_low", "delta_up",
                       "green_low", "green_up",
@@ -186,38 +205,40 @@ sims_B <- as.data.frame(sims_B)
 
 delta_cover_B <- (sims_B$delta_low <= true_PAF_B) & (sims_B$delta_up>= true_PAF_B)
 green_cover_B <- (sims_B$green_low <= true_PAF_B) & (sims_B$green_up>= true_PAF_B)
-mc_cover_B    <- (sims_B$mc_low <= true_PAF_B) & (sims_B$mc_up>= true_PAF_B)
+mc_cover_B <- (sims_B$mc_low <= true_PAF_B) & (sims_B$mc_up>= true_PAF_B)
 
 delta_width_B <- sims_B$delta_up - sims_B$delta_low
 green_width_B <- sims_B$green_up - sims_B$green_low
-mc_width_B    <- sims_B$mc_up - sims_B$mc_low
+mc_width_B <- sims_B$mc_up - sims_B$mc_low
 
 coverage_width_B <- data.frame(
-  method = c("Delta", "Greenland", "Monte Carlo"),
-  cover  = c(mean(delta_cover_B),
+  Method = c("Delta", "Greenland", "Monte Carlo"),
+  Coverage  = c(mean(delta_cover_B),
              mean(green_cover_B),
              mean(mc_cover_B)),
-  width  = c(mean(delta_width_B),
+  Width  = c(mean(delta_width_B),
              mean(green_width_B),
              mean(mc_width_B))
 )
-delta_bad <- (sims$delta_low < 0) | (sims$delta_up > 1)
-green_bad <- (sims$green_low < 0) | (sims$green_up > 1)
-mc_bad  <- (sims$mc_low < 0) | (sims$mc_up > 1)
 
-boundary_A <- data.frame(
-  method  = c("Delta", "Greenland", "Monte Carlo"),
-  prob_outside_01 = c(mean(delta_bad),
-                      mean(green_bad),
-                      mean(mc_bad))
-)
 delta_bad_B <- (sims_B$delta_low < 0) | (sims_B$delta_up > 1)
 green_bad_B <- (sims_B$green_low < 0) | (sims_B$green_up > 1)
 mc_bad_B  <- (sims_B$mc_low < 0) | (sims_B$mc_up > 1)
 
 boundary_B <- data.frame(
-  method  = c("Delta", "Greenland", "Monte Carlo"),
-  prob_outside_01 = c(mean(delta_bad_B),
+  Method  = c("Delta", "Greenland", "Monte Carlo"),
+  Prob_Outside_Logical_Range = c(mean(delta_bad_B),
                       mean(green_bad_B),
                       mean(mc_bad_B))
+)
+
+## Comparison Plots
+ciwidth <- rbind(
+  data.frame(Scenario = "A", coverage_width_A),
+  data.frame(Scenario = "B", coverage_width_B)
+)
+
+boundary <- rbind(
+  data.frame(Scenario="A", boundary_A),
+  data.frame(Scenario="B", boundary_B)
 )
