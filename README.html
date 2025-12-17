@@ -9,10 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Group 7: Kelsey Britton &amp; Theyab Alkhoori" />
 
 
-<title>Comparing Greenland, Delta, and Monte Carlo Methods for PAF Confidence Intervals</title>
+<title>README</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,432 +348,59 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Comparing Greenland, Delta, and Monte Carlo
-Methods for PAF Confidence Intervals</h1>
-<h3 class="subtitle">STAT 400</h3>
-<h4 class="author">Group 7: Kelsey Britton &amp; Theyab Alkhoori</h4>
 
 </div>
 
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>The population-attributable fraction (PAF) is used in epidemiology to
-quantify how many cases of a disease can be attributed to a specific
-exposure or the reduction in cases that could be achieves if the
-exposure were to be eliminated (Khosravi et al., 2021). PAF can be
-defined as: <span class="math display">\[
-PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
-\]</span></p>
-<p>where <span class="math inline">\(P_e\)</span> is the proportion of
-the population that is exposed and RR is the relative risk, the ratio of
-the risk of disease among the exposed group to the risk among the
-unexposed group (Khosravi et al., 2021).</p>
-<p>While point estimates of the population-attributable fraction (PAF)
-are informative, they do not express uncertainty arising from estimation
-of exposure prevalence and relative risk. Confidence intervals (CIs) are
-therefore essential for interpreting PAF estimates and for informing
-public health decision-making. However, because the PAF is a proportion,
-it is logically bounded between 0 and 1. Standard CI methods based on
-large-sample normal approximations may violate these bounds, producing
-negative values or values exceeding one, which are not interpretable for
-epidemiology (Greenland, 2015). This limitation motivates the comparison
-of alternative CI methods that better account for the nonlinearity and
-bounded nature of the PAF.</p>
-<p>The article <em>A Comparison of Green, Delta, and Monte Carlo Methods
-to Select an Optimal Approach for Calculating the 95% Confidence
-Interval of the Population-Attributable Fraction.</em> by Lee et
-al. (2024) compared three methods for computing confidence intervals for
-PAFs:</p>
+<div id="comparing-greenland-delta-and-monte-carlo-methods-for-paf-confidence-intervals" class="section level1">
+<h1>Comparing Greenland, Delta, and Monte Carlo Methods for PAF
+Confidence Intervals</h1>
+<p><strong>Course:</strong> STAT 400<br />
+<strong>Authors:</strong> Kelsey Britton &amp; Theyab Alkhoori</p>
+</div>
+<div id="what-this-project-does" class="section level1">
+<h1>What This Project Does</h1>
+<p>This repository contains the complete analysis for a STAT 400 project
+comparing three methods for constructing <strong>95% confidence
+intervals (CIs)</strong> for the <strong>Population-Attributable
+Fraction (PAF)</strong> based on an article by Lee et al.:</p>
 <ul>
-<li>Green method<br />
+<li>Delta Method<br />
 </li>
-<li>Delta method<br />
+<li>Greenland Method<br />
 </li>
-<li>Monte Carlo method</li>
+<li>Monte Carlo Simulation Method</li>
 </ul>
-<p>This project aims to replicate two of the scenarios used in the
-article and extend this by evaluating how often the three methods
-produce intervals that are outside of the logical bound of [0,1], which
-would indicate a proportion of the cases either less than 0% or greater
-than 100%.</p>
+<p>Using simulation, we evaluate how these methods perform with respect
+to: - PAF point estimation - Coverage probability - Mean confidence
+interval width - Frequency of confidence intervals outside the logical
+bounds <span class="math inline">\([0,1]\)</span></p>
+<div id="why-this-project-is-useful" class="section level2">
+<h2>Why This Project Is Useful</h2>
+<p>The Population-Attributable Fraction is widely used in epidemiology,
+but many standard confidence-interval methods can produce values below 0
+or above 1, which are not interpretable as proportions. This project
+demonstrates how different CI methods behave under realistic conditions
+and highlights when simulation-based approaches provide more reliable
+and interpretable results.</p>
+<hr />
 </div>
-<div id="methods" class="section level1">
-<h1>Methods</h1>
-<div id="simulation-overview" class="section level2">
-<h2>Simulation Overview</h2>
-<p>We replicated the simulation design from the article by Lee et al. to
-estimate the Population-Attributable Fraction (PAF) and compare three
-confidence interval (CI) methods: the Delta method, the Greenland
-(Green) featured in the article:</p>
-<p>-Scenario A: Modest effect size (<span class="math inline">\(RR\)</span> = 1.2), moderate prevalence (<span class="math inline">\(P_e\)</span> = 0.10), sample size <span class="math inline">\(T_p\)</span> = 1,000.</p>
-<p>-Scenario B: Strong effect size (<span class="math inline">\(RR\)</span> = 5.0), same prevalence, large sample
-size <span class="math inline">\(T_p\)</span> = 100,000.</p>
-<p>Then a simulation study with <span class="math inline">\(n =
-500\)</span> iterations was performed on each scenario to determine the
-proportion of CIs containing the true PAF, average CI width, and the the
-proportion of CIs that violated the [0,1] boundary.</p>
-</div>
-<div id="notations-and-definitions-in-this-study" class="section level2">
-<h2>Notations and definitions in this study</h2>
+<div id="repository-structure" class="section level2">
+<h2>Repository Structure</h2>
 <ul>
-<li><strong>PAF</strong>: Population-attributable fraction<br />
-</li>
-<li><span class="math inline">\(P_e\)</span>: Prevalence of exposure in
-the total population<br />
-</li>
-<li><strong>RR</strong>: Relative risk for the exposed group<br />
-</li>
-<li><span class="math inline">\(T_p\)</span>: Total population
-size<br />
-</li>
-<li><strong>V[<strong><span class="math inline">\(\beta\)</span></strong>]</strong>: Variance of the
-log(RR) estimator<br />
-</li>
-<li><strong>V[<strong><span class="math inline">\(P_e\)</span></strong>]</strong>: Variance of the
-exposure prevalence estimator<br />
-</li>
-<li><strong>CI</strong>: 95% confidence interval for the PAF</li>
+<li>Group7STAT400CodeSource.R # ALL simulation and analysis code</li>
+<li>FinalGroup7PaperSTAT400.html # Final paper (rendered output)</li>
+<li>FinalGroup7PaperSTAT400.Rmd # Final paper (source)</li>
+<li>FinalGroup7SlidesSTAT400.html # Final slides (rendered output)</li>
+<li>FinalGroup7SlidesSTAT400.Rmd # Final slides (source)</li>
+<li>project-7.Rproj # RStudio project file</li>
+<li>README.md # Project overview and instructions</li>
+<li>styles.css # Slide styling</li>
 </ul>
 </div>
-<div id="paf-formula" class="section level2">
-<h2>PAF Formula</h2>
-<p>The PAF was estimated using the Levin formula (Khosravi et al. 2021),
-which depends on the exposure prevalence and the risk ratio:</p>
-<p><span class="math display">\[
-PAF = \frac{Pe(RR - 1)}{Pe(RR - 1) + 1}
-\]</span></p>
-<hr />
+<div id="required-packages" class="section level2">
+<h2>Required Packages</h2>
 </div>
-<div id="confidence-interval-methods" class="section level2">
-<h2>Confidence Interval Methods</h2>
-<div id="delta-method" class="section level3">
-<h3>Delta Method</h3>
-<p>The Delta method uses a Taylor series approximation to estimate the
-variance of the PAF estimator.<br />
-The variance of PAF is computed using the variances of <span class="math inline">\(P_e\)</span> and <span class="math inline">\(\beta\)</span> (log(RR)), following the
-structure:</p>
-<p><span class="math display">\[
-V[\widehat{PAF}] = \frac{V[P_e](RR - 1)^2 + V[β](RR \cdot P_e)^2}{(P_e
-(RR - 1) + 1)^4}
-\]</span> (Lee et al., 2024).</p>
-<p>A 95% CI is then constructed as:</p>
-<p><span class="math display">\[
-PAF \pm 1.96 \times \sqrt{V[\widehat{PAF}]}
-\]</span></p>
-</div>
-<div id="greenland-method" class="section level3">
-<h3>Greenland Method</h3>
-<p>The Greenland method uses a variance-stabilizing transformation of
-<span class="math inline">\(1 - PAF\)</span>, incorporating the odds of
-exposure:</p>
-<p><span class="math display">\[
-O = \frac{Pe}{1 - Pe}
-\]</span></p>
-<p>This method accounts for variability in both the RR and Pe.<br />
-After computing the transformed variance, the 95% CI is back-transformed
-to the PAF scale:</p>
-<p><span class="math display">\[
-CI = 1 - (1 - PAF) \exp(\pm 1.96 \sqrt{V[\widehat{PAF}]})
-\]</span> (Greenland, 2015; Lee et al., 2024).</p>
-</div>
-<div id="monte-carlo-method" class="section level3">
-<h3>Monte Carlo Method</h3>
-<p>The Monte Carlo method generates random samples for log(RR) and <span class="math inline">\(P_e\)</span>:</p>
-<ul>
-<li><span class="math inline">\(\beta = \log(RR)\)</span> is sampled
-from a normal distribution with variance V[<span class="math inline">\(\beta\)</span>]<br />
-</li>
-<li><span class="math inline">\(P_e\)</span> is sampled from a binomial
-distribution with variance V[<span class="math inline">\(P_e\)</span>]</li>
-</ul>
-<p>For each simulation, a new PAF is computed.<br />
-The 95% CI is defined as the 2.5th and 97.5th percentiles of the
-simulated PAF distribution (Lee et al., 2024).</p>
-</div>
-</div>
-<div id="simulation-design" class="section level2">
-<h2>Simulation Design</h2>
-<p>For each scenario, we:</p>
-<ol style="list-style-type: decimal">
-<li>Drew <span class="math inline">\(RR^*\)</span> from a log-normal
-distribution and <span class="math inline">\(P_e^*\)</span> from a
-binomial distribution.</li>
-<li>Computed CIs using the three methods.</li>
-<li>Recorded CI coverage and width.</li>
-</ol>
-<p>In addition, we noted whether each confidence interval extended
-outside the logical bounds of [0,1]. This extension provides a practical
-assessment of interpretability, as confidence intervals outside this
-range cannot represent valid population proportions. Although this was
-not evaluated in the original study by Lee et al. (2024), it is highly
-relevant for applied epidemiological research and motivated our
-extension of their simulation framework.</p>
-<hr />
-</div>
-</div>
-<div id="results" class="section level1">
-<h1>Results</h1>
-<p>We evaluated the performance of the Delta, Greenland, and Monte Carlo
-confidence interval methods under two scenarios differing in effect size
-and sample size. Performance was assessed using point estimates of the
-population-attributable fraction (PAF), empirical coverage probability,
-average confidence interval (CI) width, and the proportion of confidence
-intervals that violated the logical [0,1] bounds.</p>
-<table>
-<caption><span style="font-weight:bold;">Table 1: Scenario A: PAF
-estimates and 95% CIs.</span></caption>
-<thead>
-<tr class="header">
-<th align="left">Method</th>
-<th align="right">PAF</th>
-<th align="right">Lower</th>
-<th align="right">Upper</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Delta</td>
-<td align="right">0.01961</td>
-<td align="right">0.00406</td>
-<td align="right">0.03515</td>
-</tr>
-<tr class="even">
-<td align="left">Greenland</td>
-<td align="right">0.01961</td>
-<td align="right">0.00387</td>
-<td align="right">0.03510</td>
-</tr>
-<tr class="odd">
-<td align="left">Monte Carlo</td>
-<td align="right">0.01955</td>
-<td align="right">0.00536</td>
-<td align="right">0.03655</td>
-</tr>
-</tbody>
-</table>
-<p>Table 1 presents the estimated PAF and corresponding 95% confidence
-intervals for Scenario A, which represents a weak association (<span class="math inline">\(RR\)</span>=1.2), moderate exposure prevalence
-(<span class="math inline">\(P_e\)</span>=0.10), and sample size <span class="math inline">\(T_p\)</span> =1,000. All three methods produced
-nearly identical point estimates of the PAF, with values centered around
-0.0196, indicating strong agreement in point estimation accuracy under
-mild parameter settings.</p>
-<table>
-<caption><span style="font-weight:bold;">Table 2: Scenario A: Coverage
-and mean CI width.</span></caption>
-<thead>
-<tr class="header">
-<th align="left">Method</th>
-<th align="right">Coverage</th>
-<th align="right">Width</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Delta</td>
-<td align="right">0.956</td>
-<td align="right">0.03132</td>
-</tr>
-<tr class="even">
-<td align="left">Greenland</td>
-<td align="right">0.956</td>
-<td align="right">0.03145</td>
-</tr>
-<tr class="odd">
-<td align="left">Monte Carlo</td>
-<td align="right">0.952</td>
-<td align="right">0.03149</td>
-</tr>
-</tbody>
-</table>
-<p>Table 2 summarizes coverage probabilities and mean CI widths for
-Scenario A. All three methods achieved coverage probabilities close to
-the nominal 95% level, demonstrating good coverage performance. The
-Monte Carlo method exhibited slightly lower coverage than the Delta and
-Greenland methods. However, the difference was minimal and remained
-close to the target level. Mean CI widths were nearly identical across
-methods, with the Monte Carlo method producing marginally wider
-intervals. This increased width reflects the Monte Carlo method’s
-ability to capture skewness in the sampling distribution of the PAF
-rather than relying on linear approximations.</p>
-<table>
-<caption><span style="font-weight:bold;">Table 3: Scenario A: Proportion
-of CIs outside the [0,1] interval</span></caption>
-<thead>
-<tr class="header">
-<th align="left">Method</th>
-<th align="right">Prob_Outside_Logical_Range</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Delta</td>
-<td align="right">0.262</td>
-</tr>
-<tr class="even">
-<td align="left">Greenland</td>
-<td align="right">0.266</td>
-</tr>
-<tr class="odd">
-<td align="left">Monte Carlo</td>
-<td align="right">0.216</td>
-</tr>
-</tbody>
-</table>
-<p>Table 3 highlights a key distinction among the methods. Despite
-similar coverage and interval width, the Delta and Greenland methods
-produced confidence intervals that extended outside the logical [0,1]
-range in approximately 26% of simulations. In contrast, the Monte Carlo
-method reduced this probability to approximately 22%. Although boundary
-violations still occurred for all methods, the Monte Carlo approach
-demonstrated improved adherence to the constraints of the PAF.</p>
-<table>
-<caption><span style="font-weight:bold;">Table 4: Scenario B: PAF
-estimates and 95% CIs.</span></caption>
-<thead>
-<tr class="header">
-<th align="left">Method</th>
-<th align="right">PAF</th>
-<th align="right">Lower</th>
-<th align="right">Upper</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Delta</td>
-<td align="right">0.28571</td>
-<td align="right">0.25204</td>
-<td align="right">0.31939</td>
-</tr>
-<tr class="even">
-<td align="left">Greenland</td>
-<td align="right">0.28571</td>
-<td align="right">0.25123</td>
-<td align="right">0.31861</td>
-</tr>
-<tr class="odd">
-<td align="left">Monte Carlo</td>
-<td align="right">0.28577</td>
-<td align="right">0.25265</td>
-<td align="right">0.31994</td>
-</tr>
-</tbody>
-</table>
-<p>Table 4 presents the estimated PAF and 95% confidence intervals for
-Scenario B, which represents a strong association (<span class="math inline">\(RR\)</span>=5.0) and a large sample size (<span class="math inline">\(T_p\)</span>=100,000). All three methods produced
-nearly identical point estimates close to the true PAF of 0.2857,
-indicating excellent agreement in point estimation accuracy under
-favorable sampling conditions.</p>
-<table>
-<caption><span style="font-weight:bold;">Table 5: Scenario B: Coverage
-and mean CI width.</span></caption>
-<thead>
-<tr class="header">
-<th align="left">Method</th>
-<th align="right">Coverage</th>
-<th align="right">Width</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Delta</td>
-<td align="right">0.954</td>
-<td align="right">0.03128</td>
-</tr>
-<tr class="even">
-<td align="left">Greenland</td>
-<td align="right">0.952</td>
-<td align="right">0.03142</td>
-</tr>
-<tr class="odd">
-<td align="left">Monte Carlo</td>
-<td align="right">0.944</td>
-<td align="right">0.03138</td>
-</tr>
-</tbody>
-</table>
-<p>Table 5 shows coverage probabilities and mean CI widths for Scenario
-B. All methods maintained coverage near the 95% level, although the
-Monte Carlo method again exhibited slightly lower coverage compared to
-the Delta and Greenland methods. Mean CI widths were very similar across
-methods, suggesting that precision was largely driven by sample size
-rather than the choice of CI method in this scenario.</p>
-<table>
-<caption><span style="font-weight:bold;">Table 6: Scenario B: Proportion
-of CIs outside the [0,1] range</span></caption>
-<thead>
-<tr class="header">
-<th align="left">Method</th>
-<th align="right">Prob_Outside_Logical_Range</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Delta</td>
-<td align="right">0.256</td>
-</tr>
-<tr class="even">
-<td align="left">Greenland</td>
-<td align="right">0.270</td>
-</tr>
-<tr class="odd">
-<td align="left">Monte Carlo</td>
-<td align="right">0.208</td>
-</tr>
-</tbody>
-</table>
-<p>Despite strong coverage and narrow confidence intervals, Table 6
-reveals that boundary violations persisted for the Delta and Greenland
-methods, occurring in approximately 26–27% of simulations. The Monte
-Carlo method again demonstrated superior boundary behavior, reducing the
-probability of invalid confidence intervals to approximately 21%. These
-results indicate that even in large samples with strong associations,
-approximation-based methods still produce more confidence intervals that
-violate logical constraints.</p>
-<hr />
-</div>
-<div id="discussion" class="section level1">
-<h1>Discussion</h1>
-<p>This study compared three methods for constructing confidence
-intervals for the population-attributable fraction under two realistic
-scenarios. Across both scenarios, the Delta, Greenland, and Monte Carlo
-methods produced nearly identical point estimates and achieved coverage
-probabilities close to the nominal 95% level, consistent with the
-findings of Lee et al. (2024). However, important differences were noted
-when considering the interpretability of the resulting confidence
-intervals.</p>
-<p>The Delta and Greenland methods rely on Taylor-series linearization
-and normal approximations, which explains their tendency to produce
-confidence intervals that extend outside the logical [0,1] range. These
-violations were notable in Scenario A, where the true PAF was small, but
-they persisted even in Scenario B despite the large sample size and
-strong association. This demonstrates that increasing sample size alone
-does not fully mitigate boundary issues associated with to
-approximation-based methods.</p>
-<p>In contrast, the Monte Carlo method consistently demonstrated
-improved boundary behavior by directly simulating the sampling
-distribution of the PAF. Although this approach resulted in slightly
-wider confidence intervals and marginally lower coverage in some
-settings, these differences were small. From an applied epidemiological
-perspective, confidence intervals that respect the constraints are
-critical, particularly when PAF estimates are used to inform public
-health policy.</p>
-<hr />
-</div>
-<div id="references" class="section level1">
-<h1>References</h1>
-<p>Greenland, S. (2015). Concepts and pitfalls in measuring and
-interpreting attributable fractions, prevented fractions, and causation
-probabilities. Annals of Epidemiology, 25(3), 155–161. PubMed. <a href="https://doi.org/10.1016/j.annepidem.2014.11.005" class="uri">https://doi.org/10.1016/j.annepidem.2014.11.005</a></p>
-<p>Khosravi, A., Nazemipour, M., Shinozaki, T., &amp; Mansournia, M. A.
-(2021). Population attributable fraction in textbooks: Time to revise.
-Global Epidemiology, 3(PubMed). <a href="https://doi.org/10.1016/j.gloepi.2021.100062" class="uri">https://doi.org/10.1016/j.gloepi.2021.100062</a></p>
-<p>Lee, S., Moon, S., Kim, K., Sung, S., Hong, Y., Lim, W., &amp; Park,
-S. K. (2024). A Comparison of Green, Delta, and Monte Carlo Methods to
-Select an Optimal Approach for Calculating the 95% Confidence Interval
-of the Population-attributable Fraction: Guidance for Epidemiological
-Research. Journal of Preventive Medicine and Public Health = Yebang
-Uihakhoe Chi, 57(5), 499–507. PubMed. <a href="https://doi.org/10.3961/jpmph.24.272" class="uri">https://doi.org/10.3961/jpmph.24.272</a></p>
 </div>
 
 
