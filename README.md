@@ -25,6 +25,7 @@ The Population-Attributable Fraction is widely used in epidemiology, but many st
 
 ## Repository Structure
 
+main:
 - Group7STAT400CodeSource.R # ALL simulation and analysis code
 - FinalGroup7PaperSTAT400.html # Final paper (rendered output)
 - FinalGroup7PaperSTAT400.Rmd # Final paper (source)
@@ -34,4 +35,38 @@ The Population-Attributable Fraction is widely used in epidemiology, but many st
 - README.md # Project overview and instructions
 - styles.css # Slide styling
 
+---
+
 ## Required Packages
+
+- knitr
+- ggplot2
+
+---
+
+## Reproducibility
+
+All simulations in Group7STAT400CodeSource.R are reproducible using set.seed(400)
+
+---
+
+## How to Run
+
+1. Knit FinalGroup7PaperSTAT400.Rmd
+    - This file references Group7STAT400CodeSource.R for simulation code
+    - All simulations will be run
+    - Figures will be generated
+    - The final paper will be produced
+    
+2. Knit FinalGroup7SlidesSTAT400.Rmd
+    - This file references Group7STAT400CodeSource.R for simulation code
+    - This file references styles.css for aesthetics
+    - All simulations will be run
+    - Figures and plots will be generated
+    - The final presentation will be produced
+    
+---
+
+## Acknowledgments
+
+References are provided in the paper and slides.

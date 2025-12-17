@@ -387,19 +387,55 @@ and interpretable results.</p>
 </div>
 <div id="repository-structure" class="section level2">
 <h2>Repository Structure</h2>
-<ul>
-<li>Group7STAT400CodeSource.R # ALL simulation and analysis code</li>
-<li>FinalGroup7PaperSTAT400.html # Final paper (rendered output)</li>
-<li>FinalGroup7PaperSTAT400.Rmd # Final paper (source)</li>
-<li>FinalGroup7SlidesSTAT400.html # Final slides (rendered output)</li>
-<li>FinalGroup7SlidesSTAT400.Rmd # Final slides (source)</li>
-<li>project-7.Rproj # RStudio project file</li>
-<li>README.md # Project overview and instructions</li>
-<li>styles.css # Slide styling</li>
-</ul>
+<p>main: - Group7STAT400CodeSource.R # ALL simulation and analysis code
+- FinalGroup7PaperSTAT400.html # Final paper (rendered output) -
+FinalGroup7PaperSTAT400.Rmd # Final paper (source) -
+FinalGroup7SlidesSTAT400.html # Final slides (rendered output) -
+FinalGroup7SlidesSTAT400.Rmd # Final slides (source) - project-7.Rproj #
+RStudio project file - README.md # Project overview and instructions -
+styles.css # Slide styling</p>
+<hr />
 </div>
 <div id="required-packages" class="section level2">
 <h2>Required Packages</h2>
+<ul>
+<li>knitr</li>
+<li>ggplot2</li>
+</ul>
+<hr />
+</div>
+<div id="reproducibility" class="section level2">
+<h2>Reproducibility</h2>
+<p>All simulations in Group7STAT400CodeSource.R are reproducible using
+set.seed(400)</p>
+<hr />
+</div>
+<div id="how-to-run" class="section level2">
+<h2>How to Run</h2>
+<ol style="list-style-type: decimal">
+<li>Knit FinalGroup7PaperSTAT400.Rmd
+<ul>
+<li>This file references Group7STAT400CodeSource.R for simulation
+code</li>
+<li>All simulations will be run</li>
+<li>Figures will be generated</li>
+<li>The final paper will be produced</li>
+</ul></li>
+<li>Knit FinalGroup7SlidesSTAT400.Rmd
+<ul>
+<li>This file references Group7STAT400CodeSource.R for simulation
+code</li>
+<li>This file references styles.css for aesthetics</li>
+<li>All simulations will be run</li>
+<li>Figures and plots will be generated</li>
+<li>The final presentation will be produced</li>
+</ul></li>
+</ol>
+<hr />
+</div>
+<div id="acknowledgments" class="section level2">
+<h2>Acknowledgments</h2>
+<p>References are provided in the paper and slides.</p>
 </div>
 </div>
 
