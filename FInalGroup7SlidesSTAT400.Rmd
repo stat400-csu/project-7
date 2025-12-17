@@ -8,7 +8,7 @@ output:
 ---
 ```{r setup, include=FALSE}
 
-source("Group7SlidesSTAT400CodeSource.R") 
+source("Group7STAT400CodeSource.R") 
 knitr::opts_chunk$set(echo = FALSE)
 
 ```
