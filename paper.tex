@@ -1,0 +1,331 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={STAT 400 Group 7 Paper DRAFT},
+  pdfauthor={Group7},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{STAT 400 Group 7 Paper DRAFT}
+\author{Group7}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{introduction}
+
+The population-attributable fraction (PAF) is used in epidemiology to
+quantify how many cases of a disease can be attributed to a specific
+exposure or the reduction in cases that could be achieves if the
+exposure were to be eliminated
+(\url{https://pmc.ncbi.nlm.nih.gov/articles/PMC1508384/?page=1}). PAF
+can be defined as:
+
+\[
+PAF = \frac{P_e(RR-1)}{P_e(RR-1)+1}
+\]
+
+where \(P_e\) is the proportion of the population that is exposed and RR
+is the relative risk, the ratio of the risk of disease among the exposed
+group to the risk among the unexposed group
+(\url{https://pmc.ncbi.nlm.nih.gov/articles/PMC1508384/?page=3}).
+
+While point estimates of the population-attributable fraction (PAF) are
+informative, they do not express uncertainty arising from estimation of
+exposure prevalence and relative risk. Confidence intervals (CIs) are
+therefore essential for interpreting PAF estimates and for informing
+public health decision-making. However, because the PAF is a proportion,
+it is logically bounded between 0 and 1. Standard CI methods based on
+large-sample normal approximations may violate these bounds, producing
+negative values or values exceeding one, which are not interpretable for
+epidemiology. This limitation motivates the comparison of alternative CI
+methods that better account for the nonlinearity and bounded nature of
+the PAF.
+
+The article \emph{A Comparison of Green, Delta, and Monte Carlo Methods
+to Select an Optimal Approach for Calculating the 95\% Confidence
+Interval of the Population-Attributable Fraction.} by Lee et
+al.~compared three methods for computing confidence intervals for PAFs:
+
+\begin{itemize}
+\tightlist
+\item
+  Green method\\
+\item
+  Delta method\\
+\item
+  Monte Carlo method
+\end{itemize}
+
+This project aims to replicate two of the scenarios used in the article
+and extend this by evaluating how often the three methods produce
+intervals that are outside of the logical bound of {[}0,1{]}, which
+would indicate a proportion of the cases either less than 0\% or greater
+than 100\%.
+
+\section{Methods}\label{methods}
+
+\subsection{Simulation Overview}\label{simulation-overview}
+
+We replicated the simulation design from the article \emph{A Comparison
+of Green, Delta, and Monte Carlo Methods\ldots{}} to estimate the
+Population-Attributable Fraction (PAF) and compare three confidence
+interval (CI) methods: the Delta method, the Greenland (Green) method,
+and the Monte Carlo method based on two scenarios in Lee et al.~(2024):
+
+-Scenario A: Modest effect size (\(RR\) = 1.2), moderate prevalence
+(\(P_e\) = 0.10), sample size \(T_p\) = 1,000.
+
+-Scenario B: Strong effect size (\(RR\) = 5.0), same prevalence, large
+sample size \(T_p\) = 100,000.
+
+Then a simulation study with \(n = 500\) iterations was performed on
+each scenario to determine the proportion of CIs containing the true
+PAF, average CI width, and the the proportion of CIs that violated the
+{[}0,1{]} boundary.
+
+\subsection{Notations and definitions in this
+study}\label{notations-and-definitions-in-this-study}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{PAF}: Population-attributable fraction\\
+\item
+  \(P_e\): Prevalence of exposure in the total population\\
+\item
+  \textbf{RR}: Relative risk for the exposed group\\
+\item
+  \(T_p\): Total population size\\
+\item
+  \textbf{V{[}\textbf{\(\beta\)}{]}}: Variance of the log(RR)
+  estimator\\
+\item
+  \textbf{V{[}\textbf{\(P_e\)}{]}}: Variance of the exposure prevalence
+  estimator\\
+\item
+  \textbf{CI}: 95\% confidence interval for the PAF
+\end{itemize}
+
+\subsection{PAF Formula}\label{paf-formula}
+
+The PAF was estimated using the Levin formula, which depends on the
+exposure prevalence and the risk ratio:
+
+\[
+PAF = \frac{Pe(RR - 1)}{Pe(RR - 1) + 1}
+\]
+
+This formula is implemented in the function \texttt{paf\_single()}.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Confidence Interval
+Methods}\label{confidence-interval-methods}
+
+\subsubsection{Delta Method}\label{delta-method}
+
+The Delta method uses a Taylor series approximation to estimate the
+variance of the PAF estimator.\\
+The variance of PAF is computed using the variances of Pe and β
+(log(RR)), following the structure:
+
+\[
+V[\widehat{PAF}] = \frac{V[Pe](RR - 1)^2 + V[β](RR \cdot Pe)^2}{(Pe(RR - 1) + 1)^4}
+\]
+
+A 95\% CI is then constructed as:
+
+\[
+PAF \pm 1.96 \times \sqrt{V[\widehat{PAF}]}
+\]
+
+This procedure is implemented in \texttt{delta\_paf\_ci()}.
+
+\subsubsection{Greenland (Green) Method}\label{greenland-green-method}
+
+The Greenland method uses a variance-stabilizing transformation of
+\(1 - PAF\), incorporating the odds of exposure:
+
+\[
+O = \frac{Pe}{1 - Pe}
+\]
+
+This method accounts for variability in both the RR and Pe.\\
+After computing the transformed variance, the 95\% CI is
+back-transformed to the PAF scale:
+
+\[
+CI = 1 - (1 - PAF) \exp(\pm 1.96 \sqrt{V[\widehat{PAF}]})
+\]
+
+Implemented in \texttt{greenland\_paf\_ci()}.
+
+\subsubsection{Monte Carlo Method}\label{monte-carlo-method}
+
+The Monte Carlo method generates random samples for log(RR) and Pe:
+
+\begin{itemize}
+\tightlist
+\item
+  \(\beta = \log(RR)\) is sampled from a normal distribution with
+  variance V{[}β{]}\\
+\item
+  Pe is sampled from a binomial distribution with variance V{[}Pe{]}
+\end{itemize}
+
+For each simulation, a new PAF is computed.\\
+The 95\% CI is defined as the 2.5th and 97.5th percentiles of the
+simulated PAF distribution.
+
+Implemented in \texttt{mc\_paf\_ci()}.
+
+\subsection{Simulation Design}\label{simulation-design}
+
+For each scenario, we:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Drew RR* from a log-normal distribution and Pe* from a binomial
+  distribution.
+\item
+  Computed CIs using the three methods.
+\item
+  Recorded Ci coverage and width.
+\item
+  Calculated the proportion of CIs that had values outside of our
+  logical boundaries.
+\end{enumerate}
+
+\section{Results}\label{results}
+
+Scenario A had a modest effect size (RR = 1.2), moderate prevalence (Pe
+= 0.10), sample size T\_p = 1,000, and a true PAF = 0.0196
+
+\begin{verbatim}
+##        Method        PAF       Lower      Upper
+## 1       Delta 0.01960784 0.004060779 0.03515491
+## 2   Greenland 0.01960784 0.003869669 0.03509736
+## 3 Monte Carlo 0.01955304 0.005364261 0.03654544
+\end{verbatim}
+
+\begin{verbatim}
+##        Method Coverage      Width
+## 1       Delta    0.956 0.03131707
+## 2   Greenland    0.956 0.03145046
+## 3 Monte Carlo    0.952 0.03148512
+\end{verbatim}
+
+\begin{verbatim}
+##        Method Prob_Outside_Logical_Range
+## 1       Delta                      0.262
+## 2   Greenland                      0.266
+## 3 Monte Carlo                      0.216
+\end{verbatim}
+
+\begin{verbatim}
+##        Method       PAF     Lower     Upper
+## 1       Delta 0.2857143 0.2520350 0.3193936
+## 2   Greenland 0.2857143 0.2512268 0.3186133
+## 3 Monte Carlo 0.2857729 0.2526543 0.3199357
+\end{verbatim}
+
+\begin{verbatim}
+##        Method Coverage      Width
+## 1       Delta    0.954 0.03128194
+## 2   Greenland    0.952 0.03141555
+## 3 Monte Carlo    0.944 0.03138405
+\end{verbatim}
+
+\begin{verbatim}
+##        Method Prob_Outside_Logical_Range
+## 1       Delta                      0.256
+## 2   Greenland                      0.270
+## 3 Monte Carlo                      0.208
+\end{verbatim}
+
+\section{Discussion}\label{discussion}
+
+This study compared three methods for constructing confidence intervals
+for the population-attributable fraction (PAF): the Delta method, the
+Greenland method, and a Monte Carlo simulation--based approach. Using
+two parameter scenarios taken directly from Lee et al.~(2024), we
+evaluated how these methods behave under small PAF values with modest
+effect size (Scenario A) and large PAF values with strong effect size
+(Scenario B). Across both settings, our results were consistent with the
+patterns reported by Lee et al., supporting their conclusions.
+
+Our extension analysis further emphasized the importance of
+boundary-aware CI methods. By evaluating how often each method generated
+values outside the {[}0,1{]} range, we showed that Monte Carlo provides
+the best protection against invalid intervals in both mild (Scenario A)
+and extreme (scenario B) parameter settings. Our simulation suggests
+that the Monte Carlo method provides the most reliable confidence
+interval estimation for the population-attributable fraction.
+
+\section{References}\label{references}
+
+ADD FOR FINAL
+
+\end{document}
